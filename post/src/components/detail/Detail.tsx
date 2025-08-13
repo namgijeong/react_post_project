@@ -118,7 +118,7 @@ const requestPost = async(detailId:DetailProps) => {
 
 const requestUpdateLike = async(detailId:DetailProps, like:number) => {
     if (detailId.detailId === null) {
-        console.error("detailId is null, cannot send request");
+        console.error("detailId가 null");
         return;
     }
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
@@ -126,7 +126,18 @@ const requestUpdateLike = async(detailId:DetailProps, like:number) => {
 
     const response = await axios.get(`/updateLike/${detailId.detailId}/${like}`);
     console.log("updat like axios 수행");
-    //console.log(response.data);
+}
+
+const requestUpdateRead = async(detailId:DetailProps, read:number) => {
+    if (detailId.detailId === null) {
+        console.error("detailId가 null");
+        return;
+    }
+    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+    //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+
+    const response = await axios.get(`/updateRead/${detailId.detailId}/${read}`);
+    console.log("updat read axios 수행");
 }
 
 //props를 받아올때 {} => props 객체에서 구조분해 할당문법
@@ -203,9 +214,19 @@ const Detail = ({detailId}:DetailProps) => {
         //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
         if (like == post?.likeCount) return;
         console.log("like : "+like);
-       requestUpdateLike({detailId},like);
+        requestUpdateLike({detailId},like);
     },[like]);
     
+
+    useEffect (() => {
+        //TypeScript의 "Optional Chaining" 문법
+        //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
+        //if (read == post?.readCount) return;
+        console.log("read : "+read);
+        requestUpdateRead({detailId}, read);
+    },[read]);
+
+
     return (
         <div css = {DetailDivStyle} >
             <Box sx={{

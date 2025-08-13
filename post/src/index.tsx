@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import useStore from './components/store/useStore';
 
 //서비스 워커를 등록하고 활성화
 //서비스 워커 등록이 비동기 작업이므로, async/await을 사용해 앱 렌더링을 연기
@@ -17,6 +18,19 @@ const root = ReactDOM.createRoot(
 );
 
 enableMocking().then(() => {
+
+  // useEffect(() => {
+  //   //프로젝트 자체를 새로 구동시에는 zustand persist를 초기화
+  //   useStore.persist?.clearStorage();
+  //   useStore.getState().updatePosts([]);
+  // }, []);
+
+  
+    //프로젝트 자체를 새로 구동시에는 zustand persist를 초기화
+    //useStore.persist?.clearStorage();
+    //useStore.getState().updatePosts([]);
+  
+
   root.render(
       <App />
   );

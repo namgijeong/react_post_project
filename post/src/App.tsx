@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -9,6 +9,7 @@ import PostWrite from './components/page/PostWrite';
 import PostUpdate from './components/page/PostUpdate';
 import NotFound from './components/page/NotFound';
 
+import useStore from './components/store/useStore';
 
 function App() {
 

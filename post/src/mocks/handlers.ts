@@ -64,6 +64,28 @@ export const handlers = [
     
        
         return HttpResponse.json({success:true});
-    })
+    }),
+
+    http.get('/updateRead/:id/:read', async({params, request}) => {
+        const {id, read} =params;
+        console.log("msw id : "+id);
+        console.log("msw read : "+read);
+
+        //zustand와 연동
+        const posts: Array<Post> = useStore.getState().posts;
+        //객체의 복사와 일부 속성 덮어쓰기
+        const newArr = posts.map(item =>
+            item.id === Number(id) ? { ...item, readCount: Number(read) } : item
+        );
+
+        console.log(newArr);
+        useStore.getState().updatePosts(newArr);
+    
+        console.log("zustand 바뀜???");
+        console.log(useStore.getState().posts);
+    
+       
+        return HttpResponse.json({success:true});
+    }),
 
 ];

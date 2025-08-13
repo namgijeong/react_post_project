@@ -43,6 +43,9 @@ https://mini-space.tistory.com/41
 https://mswjs.io/docs/http/handling-requests
 https://lurgi.tistory.com/171
 
+react query 사용법
+https://mycodings.fly.dev/blog/2023-09-17-how-to-use-react-query-and-usequery#google_vignette
+
 ECMA2015(ES6)
 https://poiemaweb.com/
 
