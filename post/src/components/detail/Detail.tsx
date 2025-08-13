@@ -16,6 +16,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 import axios from 'axios';
 import { Post } from '../interface/Post';
+import useStore from '../store/useStore';
 
 
 const DetailDivStyle = css`
@@ -110,38 +111,101 @@ const requestPost = async(detailId:DetailProps) => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
     const response = await axios.get(`/findPostById/${detailId.detailId}`);
-    console.log("axios 결과");
+    console.log("request post axios 결과");
     console.log(response.data);
     return response.data;
 }
 
+const requestUpdateLike = async(detailId:DetailProps, like:number) => {
+    if (detailId.detailId === null) {
+        console.error("detailId is null, cannot send request");
+        return;
+    }
+    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+    //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-//props를 받아올때는 {}
+    const response = await axios.get(`/updateLike/${detailId.detailId}/${like}`);
+    console.log("updat like axios 수행");
+    //console.log(response.data);
+}
+
+//props를 받아올때 {} => props 객체에서 구조분해 할당문법
 const Detail = ({detailId}:DetailProps) => {
     console.log("detailId : "+detailId);
 
     //여기서 AXIOS를 사용하여 데이터 전체를 가져오자 
-    //requestPost({detailId});
 
     //useEffect는 해당 컴포넌트의 렌더링이 완료된 후에 실행되지만, useMemo는 렌더링 중에 실행
     //빈배열 => 의존하는 값이 없다. 최초 한 번만 실행
     //useMemo에 async 함수를 바로 넣으면 data는 Promise 객체가 돼서, data.number 같은 직접 접근이 안 되고 에러
     
+    //React는 Virtual DOM 비교(diffing)를 할 때 상태 객체의 참조가 달라졌는지 먼저 봄
+    //깊은 객체 구조에서는 ... 스프레드 연산자로 변경된 경로와 그 부모 객체들을 새로 만들어줘야 참조가 바뀜
     const [data,setData] = useState<Post| null>(null);
     const [like,setLike] = useState<number>(0);
+    const [read,setRead] = useState<number>(0);
+    const [content,setContent] = useState<string>('');
+    const [title,setTitle] = useState<string>('');
+    const [writer,setWriter] = useState<string>('');
+    const [date,setDate] = useState<string>('');
+
+    const posts = useStore((state) => state.posts);
+    const updatePosts = useStore((state) => state.updatePosts);
+    const post = posts.find((p) => p.id === detailId);
+
 
     useEffect (() => {
         requestPost({detailId}).then(data => {
+            //이 경우 => 새 객체 → 참조 변경 → UI 업데이트
             setData(data);
             setLike(data.likeCount);
+            setRead(data.readCount+1);
+            setContent(data.content);
+            setTitle(data.title);
+            setWriter(data.writer);
+            setDate(data.regDate);
+            //increaseLinkCount(data.readCount + 1);
+
+            console.log("첫 useEffect 렌더링시 값들");
+            console.log(data.likeCount);
+            console.log(data.readCount+1);
+            console.log(data.content);
+            console.log(data.title);
+            console.log(data.writer);
+            console.log(data.regDate);
+
         });
     },[])
 
 
     const clickLikeButton = () => {
-        setLike(like+1);
+        //number는 원시 타입(primitive type)
+        //새 값을 계산하면 원래 값과 참조가 완전히 달라짐
+        //setLike(like+1);
+        setLike(like => like + 1);
+        // console.log("like : "+like);
+        // requestUpdateLike({detailId},like);
+
+        // const newArr = posts.map(item =>
+        //     item.id === Number(detailId) ? { ...item, likeCount: Number(like) } : item
+        // );
+
+        // console.log("client newArr");
+        // console.log(newArr);
+        // updatePosts(newArr);
+        // console.log("zustand 바뀜?????");
+        // console.log(posts);
     }
 
+    useEffect (() => {
+        if (like == 0) return;
+        //TypeScript의 "Optional Chaining" 문법
+        //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
+        if (like == post?.likeCount) return;
+        console.log("like : "+like);
+       requestUpdateLike({detailId},like);
+    },[like]);
+    
     return (
         <div css = {DetailDivStyle} >
             <Box sx={{
@@ -163,24 +227,7 @@ const Detail = ({detailId}:DetailProps) => {
                     alignItems: "center",
             
                 }}> 
-                    {/* <Box sx={{
-                        width: 50,
-                        height: 100,
-                        lineHeight:100,
-                        border : "1px solid gray",
-                        margin: "auto",
-                        display: "flex",
-                        alignItems: "center",
-            
-                    }}>번호</Box>
-                    <Box sx={{
-                        width: 50,
-                        height: 100,
-                        lineHeight:100,
-                        border : "1px solid gray",
-                        margin: "auto",
-            
-                    }}> 1 </Box> */}
+                    
                     <div css = {[TitleDivStyle50, rightDivBorder]}>번호</div>
                     <div css = {[TitleDivStyle50, rightDivBorder] }>{data ? data.id : '로딩중'}</div>
 
@@ -197,7 +244,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}>
 
                     <div css = {[TitleDivStyle100, rightDivBorder]}>작성일시</div>
-                    <div css = {[TitleDivStyle200, rightDivBorder]}>{data ? data.regDate : '로딩중'}</div>
+                    <div css = {[TitleDivStyle200, rightDivBorder]}>{date}</div>
 
                 </Box>
 
@@ -212,7 +259,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}>
                     
                     <div css = {[TitleDivStyle100, rightDivBorder]}>조회수</div>
-                    <div css = {[TitleDivStyle50, rightDivBorder]}>{data ? data.readCount : '로딩중'}</div>
+                    <div css = {[TitleDivStyle50, rightDivBorder]}>{read}</div>
 
                 </Box>
 
@@ -254,7 +301,7 @@ const Detail = ({detailId}:DetailProps) => {
             
                 }}>
                     <div css = {[TitleDivStyle100, rightDivBorder]}>제목</div>
-                    <div css = {[TitleDivStyle300, rightDivBorder]}>{data ? data.title : '로딩중'}</div>
+                    <div css = {[TitleDivStyle300, rightDivBorder]}>{title}</div>
                 </Box>
 
                 {/**작성자 영역*/}
@@ -267,7 +314,7 @@ const Detail = ({detailId}:DetailProps) => {
             
                 }}>
                     <div css = {[TitleDivStyle100,rightDivBorder]}>작성자</div>
-                    <div css = {TitleDivStyle200}>{data ? data.writer : '로딩중'}</div>
+                    <div css = {TitleDivStyle200}>{writer}</div>
                 </Box>
             </Box>
 
@@ -289,7 +336,7 @@ const Detail = ({detailId}:DetailProps) => {
                     minRows={21}
                     aria-label="maximum height"
                     placeholder="글의 본문내용이 여기에 표시되었습니다. 안녕하세요."
-                    value={data ? data.content : '로딩중'}
+                    value={content}
                     style={{ width: 700,  resize: 'none', border:"none" }}
                 />
             </Box>

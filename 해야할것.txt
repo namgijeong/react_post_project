@@ -29,6 +29,8 @@ https://fubabaz.tistory.com/39
 
 zustand 설치및 사용법 
 https://steady-learner.tistory.com/entry/React-zustand-%EC%84%A4%EC%B9%98-%EB%B0%A9%EB%B2%95-%EB%B0%8F-%EC%98%88%EC%A1%94-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0
+https://blacklobster.tistory.com/3
+https://zustand.docs.pmnd.rs/guides/updating-state
 
 datagrid
 https://mui.com/material-ui/react-table/#custom-pagination-actions
