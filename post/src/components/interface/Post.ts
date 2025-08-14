@@ -16,6 +16,16 @@ export interface Post{
     readCount: number;
     likeCount: number;
     content: string;
+
+    comment: [
+        {
+            postId:number;
+            id: number;
+            writer:string;
+            content:string;
+            regDate:string;
+        }
+    ]
 }
 
 

@@ -19,6 +19,8 @@ import { Post } from '../interface/Post';
 import useStore from '../store/useStore';
 import { useQuery } from '@tanstack/react-query';
 
+import { DetailProps } from '../interface/DetailProps';
+
 const DetailDivStyle = css`
   margin-top: 100px;
   margin : auto;
@@ -63,42 +65,31 @@ const BorderBottomNone = css`
     border-bottom:none;
 `
 
-type DetailProps = {
-  detailId: number | null;  
-};
-
-
 const requestPost = async (detailId:DetailProps) => {
 
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터
-    const response = await axios.get(`/findPostById/${detailId.detailId}`);
+    const response = await axios.get(`/post/${detailId.detailId}`);
     console.log("request post axios 결과");
     console.log(response.data);
     return response.data;
 }
 
 const requestUpdateLike = async(detailId:DetailProps, like:number) => {
-    if (detailId.detailId === null) {
-        console.error("detailId가 null");
-        return;
-    }
+   
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-    const response = await axios.get(`/updateLike/${detailId.detailId}/${like}`);
+    const response = await axios.put(`/${detailId.detailId}/${like}`);
     console.log("updat like axios 수행");
 }
 
 const requestUpdateRead = async(detailId:DetailProps, read:number) => {
-    if (detailId.detailId === null) {
-        console.error("detailId가 null");
-        return;
-    }
+   
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-    const response = await axios.get(`/updateRead/${detailId.detailId}/${read}`);
+    const response = await axios.put(`/${detailId.detailId}/${read}`);
     console.log("updat read axios 수행");
 }
 
@@ -168,6 +159,10 @@ const Detail = ({detailId}:DetailProps) => {
         // updatePosts(newArr);
         // console.log("zustand 바뀜?????");
         // console.log(posts);
+    }
+    
+    const clickUpdateButton = () => {
+        window.location.href = `/detail/:${detailId}/edit`;
     }
 
     useEffect (() => {
@@ -382,7 +377,9 @@ const Detail = ({detailId}:DetailProps) => {
                 justifyContent: "flex-end",
             
             }}>
-                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickLikeButton();}}>좋아요 누르기</Button>
+                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickUpdateButton();}}>수정하기</Button>
+                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {}}>삭제하기</Button>
+                <Button sx={{width:150, height:50, marginLeft:30}} variant="contained" onClick = {() => {clickLikeButton();}}>좋아요 누르기</Button>
             </Box>
            
         </div>

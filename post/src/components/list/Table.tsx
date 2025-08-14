@@ -21,7 +21,7 @@ type TableRow = {
 const requestPosts = async() => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
-    const response = await axios.get("/findPosts");
+    const response = await axios.get("/posts");
     console.log("axios 결과");
     console.log(response.data);
     return response.data;

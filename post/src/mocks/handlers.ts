@@ -18,7 +18,7 @@ import useStore from '../components/store/useStore';
 
 export const handlers = [
     
-    http.get('/findPostById/:id', async({params, request}) => {
+    http.get('/post/:id', async({params, request}) => {
         //const data = await request.json();
 
         const {id} =params;
@@ -35,7 +35,7 @@ export const handlers = [
         return HttpResponse.json(findPost);
     }),
 
-    http.get('/findPosts', async({params, request}) => {
+    http.get('/posts', async({params, request}) => {
         //zustand와 연동
         const posts: Array<Post> = useStore.getState().posts;
         const findPosts = posts;
@@ -44,7 +44,7 @@ export const handlers = [
     }),
 
    
-    http.get('/updateLike/:id/:like', async({params, request}) => {
+    http.put('/:id/:like', async({params, request}) => {
         const {id, like} =params;
         console.log("msw id : "+id);
         console.log("msw like : "+like);
@@ -66,7 +66,7 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
-    http.get('/updateRead/:id/:read', async({params, request}) => {
+    http.put('/:id/:read', async({params, request}) => {
         const {id, read} =params;
         console.log("msw id : "+id);
         console.log("msw read : "+read);

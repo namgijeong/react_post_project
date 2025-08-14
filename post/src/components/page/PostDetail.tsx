@@ -18,7 +18,13 @@ const PostDetail = () => {
     //객체 구조분해
     const {id} = useParams();
     const  detailId = id ? parseInt(id, 10) : null;
-    //const detailId = id;
+    if (detailId == null) {
+        return (
+            <div>
+                <h1>해당 게시글이 존재하지 않습니다.</h1>
+            </div>
+        )
+    }
     return (
         <div >
             <h1>Postdetail</h1>
