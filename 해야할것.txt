@@ -45,6 +45,8 @@ https://lurgi.tistory.com/171
 
 react query 사용법
 https://mycodings.fly.dev/blog/2023-09-17-how-to-use-react-query-and-usequery#google_vignette
+https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#rename-cachetime-to-gctime
+https://tanstack.com/query/v5/docs/reference/QueryClient
 
 ECMA2015(ES6)
 https://poiemaweb.com/

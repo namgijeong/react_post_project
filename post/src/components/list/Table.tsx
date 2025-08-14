@@ -7,6 +7,7 @@ import Paper from '@mui/material/Paper';
 
 import axios from 'axios';
 import { Post } from '../interface/Post';
+import { useQuery } from '@tanstack/react-query';
 
 type TableRow = {
   "id" :number,
@@ -26,31 +27,6 @@ const requestPosts = async() => {
     return response.data;
 }
 
-// let rows: TableRow[] = [
-//   {"id":1, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":2, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":3, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":4, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":5, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":6, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":7, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":8, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":9, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":10, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":11, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":12, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":13, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":14, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":15, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":16, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":17, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":18, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":19, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":20, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":21, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-//   {"id":22, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10, },
-  
-// ]
 
 let rows:TableRow[] = [];
 
@@ -77,14 +53,36 @@ const goDetailClick = (params: GridRowParams) => {
 
 const Table = () => {
 
-  const [data,setData] = useState<Post| null>(null);
+  const [postsData,setPostsData] = useState<Array<Post> | null>(null);
 
-    useEffect (() => {
-        requestPosts().then(data => {
-            setData(data);
-            rows = data;
-        });
-    },[])
+    // useEffect (() => {
+    //     requestPosts().then(data => {
+    //         setPostsData(data);
+    //         rows = data;
+    //     });
+    // },[])
+
+
+    //useQuery는 훅이므로 컴포넌트나 커스텀 훅에서만 호출 가능
+    const {data, isLoading, isFetching, error} = useQuery({
+        queryKey: ['posts'],
+        queryFn: () => requestPosts(),
+    })
+
+    console.log("useQuery 사용");
+    console.log(data);
+    console.log("isLoading : "+isLoading);
+    console.log("isFetching : "+isFetching);
+    console.log(error);
+
+
+    useEffect(() => {
+      if (data) {
+          setPostsData(data);
+          rows = data;
+
+      }
+    },[data]);
 
     return (
         //Paper => mui 컨테이너 컴포넌트 종이느낌

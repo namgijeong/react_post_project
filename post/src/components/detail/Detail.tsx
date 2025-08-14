@@ -17,7 +17,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import axios from 'axios';
 import { Post } from '../interface/Post';
 import useStore from '../store/useStore';
-
+import { useQuery } from '@tanstack/react-query';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -27,28 +27,12 @@ const DetailDivStyle = css`
  
 `;
 
-
-// const DetailDivStyle = css({
-//   marginTop:"100px",
-//   margin : "auto",
-//   fontSize: "20px",
-//   textAlign: "center",
- 
-// });
-
 const TitleDivStyle50 = css`
     width: 50px;
     height: 100px;
     line-height:100px;
     
 `
-
-// const TitleDivStyle50 = css({
-//     width: "50px",
-//     height: "100px",
-//     lineHeight:"100px",
-//     border : "1px solid gray",
-// })
 
 const TitleDivStyle100 = css`
     width: 100px;
@@ -57,14 +41,6 @@ const TitleDivStyle100 = css`
    
 `
 
-// const TitleDivStyle100 = css({
-//     width: "100px",
-//     height: "100px",
-//     lineHeight:"100px",
-//     border : "1px solid gray",
-// })
-
-
 const TitleDivStyle200 = css`
     width: 200px;
     height: 100px;
@@ -72,26 +48,12 @@ const TitleDivStyle200 = css`
     
 `
 
-// const TitleDivStyle200 = css({
-//     width: "200px",
-//     height: "100px",
-//     lineHeight:"100px",
-//     border : "1px solid gray",
-// })
-
 const TitleDivStyle300 = css`
     width: 300px;
     height: 100px;
     line-height:100px;
    
 `
-
-// const TitleDivStyle300 = css({
-//     width: "300px",
-//     height: "100px",
-//     lineHeight:"100px;
-//     border : 1px solid gray;
-// })
 
 const rightDivBorder = css`
     border-right:1px solid gray;
@@ -106,10 +68,10 @@ type DetailProps = {
 };
 
 
+const requestPost = async (detailId:DetailProps) => {
 
-const requestPost = async(detailId:DetailProps) => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-    //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+    //url에 포함시키는것은 경로 파라미터
     const response = await axios.get(`/findPostById/${detailId.detailId}`);
     console.log("request post axios 결과");
     console.log(response.data);
@@ -152,7 +114,7 @@ const Detail = ({detailId}:DetailProps) => {
     
     //React는 Virtual DOM 비교(diffing)를 할 때 상태 객체의 참조가 달라졌는지 먼저 봄
     //깊은 객체 구조에서는 ... 스프레드 연산자로 변경된 경로와 그 부모 객체들을 새로 만들어줘야 참조가 바뀜
-    const [data,setData] = useState<Post| null>(null);
+    const [postData,setPostData] = useState<Post| null>(null);
     const [like,setLike] = useState<number>(0);
     const [read,setRead] = useState<number>(0);
     const [content,setContent] = useState<string>('');
@@ -160,33 +122,33 @@ const Detail = ({detailId}:DetailProps) => {
     const [writer,setWriter] = useState<string>('');
     const [date,setDate] = useState<string>('');
 
-    const posts = useStore((state) => state.posts);
-    const updatePosts = useStore((state) => state.updatePosts);
-    const post = posts.find((p) => p.id === detailId);
+    // const posts = useStore((state) => state.posts);
+    // const updatePosts = useStore((state) => state.updatePosts);
+    // const post = posts.find((p) => p.id === detailId);
 
 
-    useEffect (() => {
-        requestPost({detailId}).then(data => {
-            //이 경우 => 새 객체 → 참조 변경 → UI 업데이트
-            setData(data);
-            setLike(data.likeCount);
-            setRead(data.readCount+1);
-            setContent(data.content);
-            setTitle(data.title);
-            setWriter(data.writer);
-            setDate(data.regDate);
-            //increaseLinkCount(data.readCount + 1);
+    // useEffect (() => {
+    //     requestPost({detailId}).then(data => {
+    //         //이 경우 => 새 객체 → 참조 변경 → UI 업데이트
+    //         setData(data);
+    //         setLike(data.likeCount);
+    //         setRead(data.readCount+1);
+    //         setContent(data.content);
+    //         setTitle(data.title);
+    //         setWriter(data.writer);
+    //         setDate(data.regDate);
+    //         //increaseLinkCount(data.readCount + 1);
 
-            console.log("첫 useEffect 렌더링시 값들");
-            console.log(data.likeCount);
-            console.log(data.readCount+1);
-            console.log(data.content);
-            console.log(data.title);
-            console.log(data.writer);
-            console.log(data.regDate);
+    //         console.log("첫 useEffect 렌더링시 값들");
+    //         console.log(data.likeCount);
+    //         console.log(data.readCount+1);
+    //         console.log(data.content);
+    //         console.log(data.title);
+    //         console.log(data.writer);
+    //         console.log(data.regDate);
 
-        });
-    },[])
+    //     });
+    // },[])
 
 
     const clickLikeButton = () => {
@@ -209,25 +171,71 @@ const Detail = ({detailId}:DetailProps) => {
     }
 
     useEffect (() => {
-        if (like == 0) return;
+        console.log("useEffect like에 들어옴");
+        //if (like == 0) return;
         //TypeScript의 "Optional Chaining" 문법
         //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
-        if (like == post?.likeCount) return;
+        if (postData?.likeCount == undefined) return;
+        if (like == postData?.likeCount) return;
+        console.log("postData?.likeCount: "+postData?.likeCount);
         console.log("like : "+like);
         requestUpdateLike({detailId},like);
     },[like]);
     
 
     useEffect (() => {
+        console.log("useEffect read에 들어옴");
+        //if (read == 0) return;
         //TypeScript의 "Optional Chaining" 문법
         //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
-        //if (read == post?.readCount) return;
+        if (postData?.readCount == undefined) return;
+        if (read == postData?.readCount) return;
+        console.log("postData?.readCount : "+postData?.readCount);
         console.log("read : "+read);
         requestUpdateRead({detailId}, read);
     },[read]);
 
 
+    //useQuery는 훅이므로 컴포넌트나 커스텀 훅에서만 호출 가능
+    const {data, isLoading, isFetching, error } =useQuery({
+        queryKey: ['post', detailId],
+        queryFn: () => requestPost({detailId}),
+        //staleTime: 6000 ,
+    })
+
+    console.log("useQuery 사용");
+    console.log(data);
+    console.log("isLoading : "+isLoading);
+    console.log("isFetching : "+isFetching);
+    console.log(error);
+
+
+    useEffect(() => {
+        console.log("useEffect data에 들어옴");
+        if (data) {
+            console.log("if data안에 들어옴");
+            setPostData(data);
+            setLike(data.likeCount);
+            setRead(data.readCount + 1);
+            setContent(data.content);
+            setTitle(data.title);
+            setWriter(data.writer);
+            setDate(data.regDate);
+
+            console.log("첫 useEffect 렌더링시 값들");
+            console.log(data);
+            console.log(data.likeCount);
+            console.log(data.readCount+1);
+            console.log(data.content);
+            console.log(data.title);
+            console.log(data.writer);
+            console.log(data.regDate);
+        }
+    }, [data]);
+
+
     return (
+
         <div css = {DetailDivStyle} >
             <Box sx={{
                 width: 700,

@@ -28,14 +28,7 @@ const goWritePage = () => {
 }
 
 const PostList = () => {
-    // return (
-    //     <div css={divStyle}>
-    //         <h1>Hello React</h1>
-    //           <Button variant="contained">Hello World</Button>
-    //     </div>
-    // );
-
-
+    
   return (
     <div>
        {/* 여기 테이블이 들어감 */}
