@@ -12,20 +12,11 @@ export interface Post{
     id: number;
     title: string;
     writer: string;
-    regDate: string;
+    regDate: Date;
     readCount: number;
     likeCount: number;
     content: string;
 
-    comment: [
-        {
-            postId:number;
-            id: number;
-            writer:string;
-            content:string;
-            regDate:string;
-        }
-    ]
 }
 
 

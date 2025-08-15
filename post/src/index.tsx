@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import useStore from './components/store/useStore';
+// import useStore from './store/useStore';
 
 //서비스 워커를 등록하고 활성화
 //서비스 워커 등록이 비동기 작업이므로, async/await을 사용해 앱 렌더링을 연기

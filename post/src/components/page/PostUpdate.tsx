@@ -2,7 +2,7 @@ import React from 'react';
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react';
 
-import { DetailProps } from '../interface/DetailProps';
+import { DetailProps } from '../../interface/DetailProps';
 import {useParams} from 'react-router-dom';
 
 

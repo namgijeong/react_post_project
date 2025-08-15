@@ -9,17 +9,18 @@ import {css} from '@emotion/react';
 //css``...`` =>  SerializedStyles라는 내부 객체 형태로 변환해서 충돌
 //import { cx } from '@emotion/css';
 
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 
+import { DetailProps } from '../../interface/DetailProps';
+import { Post } from '../../interface/Post';
+
+// import useStore from '../../store/useStore';
 import axios from 'axios';
-import { Post } from '../interface/Post';
-import useStore from '../store/useStore';
+import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
 import { useQuery } from '@tanstack/react-query';
 
-import { DetailProps } from '../interface/DetailProps';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -65,33 +66,7 @@ const BorderBottomNone = css`
     border-bottom:none;
 `
 
-const requestPost = async (detailId:DetailProps) => {
 
-    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-    //url에 포함시키는것은 경로 파라미터
-    const response = await axios.get(`/post/${detailId.detailId}`);
-    console.log("request post axios 결과");
-    console.log(response.data);
-    return response.data;
-}
-
-const requestUpdateLike = async(detailId:DetailProps, like:number) => {
-   
-    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-    //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
-
-    const response = await axios.put(`/${detailId.detailId}/${like}`);
-    console.log("updat like axios 수행");
-}
-
-const requestUpdateRead = async(detailId:DetailProps, read:number) => {
-   
-    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-    //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
-
-    const response = await axios.put(`/${detailId.detailId}/${read}`);
-    console.log("updat read axios 수행");
-}
 
 //props를 받아올때 {} => props 객체에서 구조분해 할당문법
 const Detail = ({detailId}:DetailProps) => {
@@ -112,10 +87,6 @@ const Detail = ({detailId}:DetailProps) => {
     const [title,setTitle] = useState<string>('');
     const [writer,setWriter] = useState<string>('');
     const [date,setDate] = useState<string>('');
-
-    // const posts = useStore((state) => state.posts);
-    // const updatePosts = useStore((state) => state.updatePosts);
-    // const post = posts.find((p) => p.id === detailId);
 
 
     // useEffect (() => {
@@ -141,24 +112,40 @@ const Detail = ({detailId}:DetailProps) => {
     //     });
     // },[])
 
+    const requestPost = (detailId:DetailProps) => {
+
+        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+        //url에 포함시키는것은 경로 파라미터
+        const data = axiosGetData({url:`/post/${detailId.detailId}`});
+        console.log("request post axios 결과");
+        console.log(data);
+        return data;
+    }
+
+    const requestUpdateLike = (detailId:DetailProps, like:number) => {
+    
+        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+        //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+
+        const data = axiosPutData({url:`/${detailId.detailId}/${like}`});
+        console.log("updat like axios 수행");
+    }
+
+    const requestUpdateRead = (detailId:DetailProps, read:number) => {
+    
+        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+        //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+
+        const data = axiosPutData({url:`/${detailId.detailId}/${read}`});
+        console.log("updat read axios 수행");
+    }
 
     const clickLikeButton = () => {
         //number는 원시 타입(primitive type)
         //새 값을 계산하면 원래 값과 참조가 완전히 달라짐
         //setLike(like+1);
         setLike(like => like + 1);
-        // console.log("like : "+like);
-        // requestUpdateLike({detailId},like);
-
-        // const newArr = posts.map(item =>
-        //     item.id === Number(detailId) ? { ...item, likeCount: Number(like) } : item
-        // );
-
-        // console.log("client newArr");
-        // console.log(newArr);
-        // updatePosts(newArr);
-        // console.log("zustand 바뀜?????");
-        // console.log(posts);
+       
     }
     
     const clickUpdateButton = () => {
@@ -205,28 +192,28 @@ const Detail = ({detailId}:DetailProps) => {
     console.log(error);
 
 
-    useEffect(() => {
-        console.log("useEffect data에 들어옴");
-        if (data) {
-            console.log("if data안에 들어옴");
-            setPostData(data);
-            setLike(data.likeCount);
-            setRead(data.readCount + 1);
-            setContent(data.content);
-            setTitle(data.title);
-            setWriter(data.writer);
-            setDate(data.regDate);
+    // useEffect(() => {
+    //     console.log("useEffect data에 들어옴");
+    //     if (data) {
+    //         console.log("if data안에 들어옴");
+    //         setPostData(data);
+    //         setLike(data.likeCount);
+    //         setRead(data.readCount + 1);
+    //         setContent(data.content);
+    //         setTitle(data.title);
+    //         setWriter(data.writer);
+    //         setDate(data.regDate);
 
-            console.log("첫 useEffect 렌더링시 값들");
-            console.log(data);
-            console.log(data.likeCount);
-            console.log(data.readCount+1);
-            console.log(data.content);
-            console.log(data.title);
-            console.log(data.writer);
-            console.log(data.regDate);
-        }
-    }, [data]);
+    //         console.log("첫 useEffect 렌더링시 값들");
+    //         console.log(data);
+    //         console.log(data.likeCount);
+    //         console.log(data.readCount+1);
+    //         console.log(data.content);
+    //         console.log(data.title);
+    //         console.log(data.writer);
+    //         console.log(data.regDate);
+    //     }
+    // }, [data]);
 
 
     return (
@@ -253,7 +240,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}> 
                     
                     <div css = {[TitleDivStyle50, rightDivBorder]}>번호</div>
-                    <div css = {[TitleDivStyle50, rightDivBorder] }>{data ? data.id : '로딩중'}</div>
+                    {/* <div css = {[TitleDivStyle50, rightDivBorder] }>{data ? data.id : '로딩중'}</div> */}
 
                 </Box>
                 

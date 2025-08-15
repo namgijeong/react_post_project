@@ -6,8 +6,13 @@ import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
 import axios from 'axios';
-import { Post } from '../interface/Post';
+import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
+
 import { useQuery } from '@tanstack/react-query';
+
+import { Post } from '../../interface/Post';
+import { AxiosRequest } from '../../interface/AxiosRequest';
+
 
 type TableRow = {
   "id" :number,
@@ -16,15 +21,6 @@ type TableRow = {
   "regDate": string,
   "readCount" :number,
   "likeCount" :number,
-}
-
-const requestPosts = async() => {
-    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-    //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
-    const response = await axios.get("/posts");
-    console.log("axios 결과");
-    console.log(response.data);
-    return response.data;
 }
 
 
@@ -62,6 +58,14 @@ const Table = () => {
     //     });
     // },[])
 
+  const requestPosts = () => {
+    //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+    //url에 포함시키는것은 경로 파라미터
+    const data = axiosGetData<AxiosRequest>({url:"/posts"});
+    console.log("axios 결과");
+    console.log(data);
+    return data;
+  }
 
     //useQuery는 훅이므로 컴포넌트나 커스텀 훅에서만 호출 가능
     const {data, isLoading, isFetching, error} = useQuery({

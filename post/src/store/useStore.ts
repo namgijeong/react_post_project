@@ -1,29 +1,29 @@
 import {create} from 'zustand'
 import { persist } from 'zustand/middleware';
 import { Post } from '../interface/Post';
-import postsData from '../../mocks/dummy_post.json';
+import postsData from '../mocks/dummy_post.json';
 
 //{"id":1, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10 , "content":"안녕하세요1"},
 //인터페이스와 매핑
-const posts: Array<Post> = postsData;
+// const posts: Array<Post> = postsData;
 
-type Posts = {
-    posts:Array<Post>,
-    updatePosts: (newposts :Array<Post>) => void
-}
+// type Posts = {
+//     posts:Array<Post>,
+//     updatePosts: (newposts :Array<Post>) => void
+// }
 
-type ReadCount = {
-    readCount: number,
-    increaseReadCount: (readCount: number) => void
-}
-type LikeCount = {
-    likeCount: number,
-    increaseLikeCount: (likeCount: number) => void
-}
-type writer = {
-    writer:string,
-    updateWriter: (writer:string) => void
-}
+// type ReadCount = {
+//     readCount: number,
+//     increaseReadCount: (readCount: number) => void
+// }
+// type LikeCount = {
+//     likeCount: number,
+//     increaseLikeCount: (likeCount: number) => void
+// }
+// type writer = {
+//     writer:string,
+//     updateWriter: (writer:string) => void
+// }
 
 // const useStore = create<ReadCount & LikeCount>(set => ({
 //     readCount: 0,
@@ -38,17 +38,17 @@ type writer = {
 //브라우저 새로고침(F5) 또는 직접 URL 접근
 //이 경우는 브라우저가 완전히 새로 로드되므로 JS 메모리 상태(Zustand)는 초기값으로
 //persist middleware localstorage 저장 
-const useStore = create<Posts>()(
-    persist(
-        (set) => ({
-            //posts: [],
-            posts:posts,
-            updatePosts: (newposts) => set(( ) => ({posts: newposts})),
-        }),
+// const useStore = create<Posts>()(
+//     persist(
+//         (set) => ({
+//             //posts: [],
+//             posts:posts,
+//             updatePosts: (newposts) => set(( ) => ({posts: newposts})),
+//         }),
 
-            { name: 'posts-storage' } // localStorage key
-    )
+//             { name: 'posts-storage' } // localStorage key
+//     )
    
-)
+// )
 
-export default useStore;
+// export default useStore;

@@ -9,7 +9,6 @@ import PostWrite from './components/page/PostWrite';
 import PostUpdate from './components/page/PostUpdate';
 import NotFound from './components/page/NotFound';
 
-import useStore from './components/store/useStore';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
