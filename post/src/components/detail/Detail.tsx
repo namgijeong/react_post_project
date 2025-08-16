@@ -161,19 +161,6 @@ const Detail = ({detailId}:DetailProps) => {
         window.location.href = `/detail/:${detailId}/edit`;
     }
 
-    // useEffect (() => {
-    //     console.log("useEffect like에 들어옴");
-        
-    //     //TypeScript의 "Optional Chaining" 문법
-    //     //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
-    //     if (postData?.likeCount == undefined) return;
-    //     if (like == postData?.likeCount) return;
-    //     console.log("postData?.likeCount: "+postData?.likeCount);
-    //     console.log("like : "+like);
-    //     requestUpdateLike({detailId},like);
-    // },[like]);
-    
-
     useEffect (() => {
         console.log("useEffect read에 들어옴");
        

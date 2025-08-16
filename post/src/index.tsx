@@ -10,7 +10,10 @@ import reportWebVitals from './reportWebVitals';
 async function enableMocking() {
   const { worker } = await import('./mocks/browsers');
 
-  return worker.start();
+  return worker.start({
+    //핸들러 없는 요청은 그냥 실제 서버로 보내고 경고도 안 뜸=> react router 경로도 계속 가로챌려고함
+    onUnhandledRequest: 'bypass',
+  });
 }
 
 const root = ReactDOM.createRoot(
