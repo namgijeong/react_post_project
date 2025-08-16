@@ -14,6 +14,8 @@ import { useReactQuery } from '../../reactquery/reactqueryHook';
 import { Post } from '../../interface/Post';
 import { AxiosRequest } from '../../interface/AxiosRequest';
 
+import {useGoDetailPost} from '../../router/routerHook';
+
 
 type TableRow = {
   "id" :number,
@@ -39,13 +41,6 @@ const columns: GridColDef[] = [
  ];
 
 const paginationModel = { page: 0, pageSize: 20 };
-
-const goDetailClick = (params: GridRowParams) => {
-  const clickedId = params.id;
-  console.log("클릭한 디테일 아이디: "+clickedId);
-  window.location.href = "/detail/"+clickedId;
-}
-
 
 
 const Table = () => {
@@ -80,6 +75,14 @@ const Table = () => {
 
     }
   },[data]);
+
+  //커스텀 훅에서 일반함수를 반환 
+  let go = useGoDetailPost();
+  const goDetailClick = (params: GridRowParams) => {
+    const clickedId = params.id;
+    console.log("클릭한 디테일 아이디: "+clickedId);
+    go(Number(clickedId));
+  }
 
   return (
       //Paper => mui 컨테이너 컴포넌트 종이느낌

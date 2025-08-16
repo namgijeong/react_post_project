@@ -53,6 +53,7 @@ export const handlers = [
 
         console.log(newArr);
         posts = newArr;
+        postsData = newArr;
     
         console.log("바뀐 posts 데이터");
         console.log(posts);
@@ -77,6 +78,7 @@ export const handlers = [
 
         console.log(newArr);
         posts = newArr;
+        postsData = newArr;
     
         console.log("바뀐 posts 데이터");
         console.log(posts);

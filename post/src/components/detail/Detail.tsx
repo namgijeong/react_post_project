@@ -88,7 +88,8 @@ const Detail = ({detailId}:DetailProps) => {
     
     //React는 Virtual DOM 비교(diffing)를 할 때 상태 객체의 참조가 달라졌는지 먼저 봄
     //깊은 객체 구조에서는 ... 스프레드 연산자로 변경된 경로와 그 부모 객체들을 새로 만들어줘야 참조가 바뀜
-    const [postData, setPostData] = useState<Post>();
+    //const [postData, setPostData] = useState<Post>();
+    const [alreadyIncreased, setAlreadyIncreased] = useState(false);
     const [id,setId] = useState<number>(0);
     const [like,setLike] = useState<number>(0);
     const [read,setRead] = useState<number>(0);
@@ -96,6 +97,7 @@ const Detail = ({detailId}:DetailProps) => {
     const [title,setTitle] = useState<string>('');
     const [writer,setWriter] = useState<string>('');
     const [date,setDate] = useState<string>('');
+    let readCount = 0;
 
     const requestPost = async (detailId:number) => {
 
@@ -150,38 +152,26 @@ const Detail = ({detailId}:DetailProps) => {
         //새 값을 계산하면 원래 값과 참조가 완전히 달라짐
         let newLike = like +1;
         setLike(newLike);
-        console.log("버튼이 눌리니?");
-
+        
         //useQuery는 컴포넌트가 마운트되면서 자동으로 실행이되는 반면, useMutation은 함수를 직접 실행
-       likeMutation.mutate({detailId: detailId , like: newLike});
-       console.log("버튼이 눌리니?");
+        likeMutation.mutate({detailId: detailId , like: newLike});
+        
     }
     
     const clickUpdateButton = () => {
         window.location.href = `/detail/:${detailId}/edit`;
     }
 
-    useEffect (() => {
-        console.log("useEffect read에 들어옴");
-       
-        //TypeScript의 "Optional Chaining" 문법
-        //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
-        if (postData?.readCount == undefined) return;
-        if (read == postData?.readCount) return;
-        console.log("postData?.readCount : "+postData?.readCount);
-        console.log("read : "+read);
-        readMutation.mutate({detailId: detailId , read: read});
-    },[read]);
-
-
+    
     useEffect(() => {
         console.log("useEffect data에 들어옴");
         if (data) {
             console.log("if data안에 들어옴");
-            setPostData(data);
+            //setPostData(data);
             setId(data.id);
             setLike(data.likeCount);
-            setRead(data.readCount + 1);
+            setRead(data.readCount);
+            readCount = data.readCount;
             setContent(data.content);
             setTitle(data.title);
             setWriter(data.writer);
@@ -191,6 +181,7 @@ const Detail = ({detailId}:DetailProps) => {
             console.log(data);
             console.log(data.likeCount);
             console.log(data.readCount+1);
+            console.log(read);
             console.log(data.content);
             console.log(data.title);
             console.log(data.writer);
@@ -198,9 +189,24 @@ const Detail = ({detailId}:DetailProps) => {
         }
     }, [data]);
 
-    
-    return (
 
+    useEffect (() => {
+        console.log("useEffect read에 들어옴");
+        if (!data) return; // 데이터가 준비되지 않았으면 실행하지 않음
+        if (alreadyIncreased) return; // 이미 증가시켰으면 다시 실행하지 않음
+        
+        //TypeScript의 "Optional Chaining" 문법
+        //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
+        // if (postData?.readCount == undefined) return;
+        // if (read == postData?.readCount) return;
+        let readPlus = readCount + 1 ;
+        setRead(readPlus+1);
+        setAlreadyIncreased(true);
+        readMutation.mutate({detailId: detailId , read: readPlus});
+    },[data, alreadyIncreased]);
+
+
+    return (
         <div css = {DetailDivStyle} >
             <Box sx={{
                 width: 700,
