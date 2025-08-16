@@ -9,6 +9,7 @@ import axios from 'axios';
 import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
 
 import { useQuery } from '@tanstack/react-query';
+import { useReactQuery } from '../../reactquery/reactqueryHook';
 
 import { Post } from '../../interface/Post';
 import { AxiosRequest } from '../../interface/AxiosRequest';
@@ -51,47 +52,39 @@ const Table = () => {
 
   const [postsData,setPostsData] = useState<Array<Post> | null>(null);
 
-    // useEffect (() => {
-    //     requestPosts().then(data => {
-    //         setPostsData(data);
-    //         rows = data;
-    //     });
-    // },[])
-
-  const requestPosts = () => {
+  const requestPosts = async () => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터
-    const data = axiosGetData<AxiosRequest>({url:"/posts"});
+    const data = await axiosGetData<AxiosRequest>({url:"/posts"});
     console.log("axios 결과");
     console.log(data);
     return data;
   }
 
-    //useQuery는 훅이므로 컴포넌트나 커스텀 훅에서만 호출 가능
-    const {data, isLoading, isFetching, error} = useQuery({
-        queryKey: ['posts'],
-        queryFn: () => requestPosts(),
-    })
 
-    console.log("useQuery 사용");
-    console.log(data);
-    console.log("isLoading : "+isLoading);
-    console.log("isFetching : "+isFetching);
-    console.log(error);
+  const {data, isLoading, isFetching, error} = useReactQuery(
+    ['posts'], requestPosts
+  );
+
+  console.log("useQuery 사용");
+  console.log(data);
+  console.log("isLoading : "+isLoading);
+  console.log("isFetching : "+isFetching);
+  console.log(error);
 
 
-    useEffect(() => {
-      if (data) {
-          setPostsData(data);
-          rows = data;
+  useEffect(() => {
+    if (data) {
+        setPostsData(data);
+        rows = data;
 
-      }
-    },[data]);
+    }
+  },[data]);
 
-    return (
-        //Paper => mui 컨테이너 컴포넌트 종이느낌
-        //sx=> mui에서 스타일을 바로 작성할 수 있게 해주는 prop
-      <Paper sx={{ height: 400, width: '70%', margin: 'auto',}}>
+  return (
+      //Paper => mui 컨테이너 컴포넌트 종이느낌
+      //sx=> mui에서 스타일을 바로 작성할 수 있게 해주는 prop
+    <Paper sx={{ height: 400, width: '70%', margin: 'auto',}}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -99,8 +92,8 @@ const Table = () => {
         sx={{ border: 0 }}
         onRowClick = {(params) => goDetailClick(params)} 
       />
-    </Paper>
-    );
+  </Paper>
+  );
 }
 
 export default Table;

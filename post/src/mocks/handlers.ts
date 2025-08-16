@@ -3,7 +3,9 @@ import { HttpResponse, http } from "msw";
 import { Post } from '../interface/Post';
 import { Comment } from '../interface/Comment';
 // import useStore from '../components/store/useStore';
-import { postsData,commentsData, changePostsData, changeCommentssData } from '../faker/storeFakerData';
+import {getPostsData, getCommentsData, changePostsData, changeCommentssData } from '../faker/storeFakerData';
+
+let postsData = getPostsData();
 
 export const handlers = [
     
@@ -19,8 +21,11 @@ export const handlers = [
         const posts = postsData;
         console.log("첫 상세페이지 진입시 데이터")
         console.log(posts);
-        findPost = posts.find(post => post.id === Number(params.id));
+        findPost = posts.find(post => post.id === Number(id));
         console.log(findPost);
+
+        console.log("params.id type:", typeof id, id);
+        console.log("post.id type:", typeof posts[0].id, posts[0].id);
         return HttpResponse.json(findPost);
     }),
 
@@ -28,11 +33,13 @@ export const handlers = [
         //데이터 배열과 연동
         const posts: Array<Post> = postsData;
         const findPosts = posts;
+        console.log("/posts msw에 들어옴");
         console.log(findPosts);
         return HttpResponse.json(findPosts);
     }),
 
-    http.put('/:id/:like', async({params, request}) => {
+    http.put('/like/:id/:like', async({params, request}) => {
+        console.log("like handler 진입");
         const {id, like} =params;
         console.log("msw id : "+id);
         console.log("msw like : "+like);
@@ -56,7 +63,7 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
-    http.put('/:id/:read', async({params, request}) => {
+    http.put('/read/:id/:read', async({params, request}) => {
         const {id, read} =params;
         console.log("msw id : "+id);
         console.log("msw read : "+read);

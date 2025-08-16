@@ -15,11 +15,15 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 import { DetailProps } from '../../interface/DetailProps';
 import { Post } from '../../interface/Post';
+import {LikeVariables} from '../../interface/LikeVariables';
+import {ReadVariables} from '../../interface/ReadVariables';
 
 // import useStore from '../../store/useStore';
 import axios from 'axios';
 import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
+
 import { useQuery } from '@tanstack/react-query';
+import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
 
 
 const DetailDivStyle = css`
@@ -66,6 +70,10 @@ const BorderBottomNone = css`
     border-bottom:none;
 `
 
+const smallFontSize = css`
+    font-size:14px;
+`
+
 
 
 //props를 받아올때 {} => props 객체에서 구조분해 할당문법
@@ -80,7 +88,8 @@ const Detail = ({detailId}:DetailProps) => {
     
     //React는 Virtual DOM 비교(diffing)를 할 때 상태 객체의 참조가 달라졌는지 먼저 봄
     //깊은 객체 구조에서는 ... 스프레드 연산자로 변경된 경로와 그 부모 객체들을 새로 만들어줘야 참조가 바뀜
-    const [postData,setPostData] = useState<Post| null>(null);
+    const [postData, setPostData] = useState<Post>();
+    const [id,setId] = useState<number>(0);
     const [like,setLike] = useState<number>(0);
     const [read,setRead] = useState<number>(0);
     const [content,setContent] = useState<string>('');
@@ -88,134 +97,121 @@ const Detail = ({detailId}:DetailProps) => {
     const [writer,setWriter] = useState<string>('');
     const [date,setDate] = useState<string>('');
 
-
-    // useEffect (() => {
-    //     requestPost({detailId}).then(data => {
-    //         //이 경우 => 새 객체 → 참조 변경 → UI 업데이트
-    //         setData(data);
-    //         setLike(data.likeCount);
-    //         setRead(data.readCount+1);
-    //         setContent(data.content);
-    //         setTitle(data.title);
-    //         setWriter(data.writer);
-    //         setDate(data.regDate);
-    //         //increaseLinkCount(data.readCount + 1);
-
-    //         console.log("첫 useEffect 렌더링시 값들");
-    //         console.log(data.likeCount);
-    //         console.log(data.readCount+1);
-    //         console.log(data.content);
-    //         console.log(data.title);
-    //         console.log(data.writer);
-    //         console.log(data.regDate);
-
-    //     });
-    // },[])
-
-    const requestPost = (detailId:DetailProps) => {
+    const requestPost = async (detailId:number) => {
 
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터
-        const data = axiosGetData({url:`/post/${detailId.detailId}`});
+        const data = await axiosGetData({url:`/post/${detailId}`});
         console.log("request post axios 결과");
         console.log(data);
         return data;
     }
 
-    const requestUpdateLike = (detailId:DetailProps, like:number) => {
+
+    //객체 구조분해(destructuring) + 타입 지정
+    const requestUpdateLike = async ({ detailId, like }: LikeVariables) => {
     
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-        const data = axiosPutData({url:`/${detailId.detailId}/${like}`});
-        console.log("updat like axios 수행");
+        console.log("detailId: " , detailId);
+        console.log("like: " , like);
+        const data = await axiosPutData({url:`/like/${detailId}/${like}`});
+        console.log("update like axios 수행");
+        return data;
     }
 
-    const requestUpdateRead = (detailId:DetailProps, read:number) => {
+    const requestUpdateRead = async ({detailId, read}: ReadVariables) => {
     
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-        const data = axiosPutData({url:`/${detailId.detailId}/${read}`});
-        console.log("updat read axios 수행");
+        const data = await axiosPutData({url:`/read/${detailId}/${read}`});
+        console.log("update read axios 수행");
+        return data;
     }
+
+    const {data, isLoading, isFetching, error} = useReactQuery(
+            ['post', `${detailId}`], () => requestPost(detailId)
+    );
+    
+    const likeMutation = useMutationReactQuery(
+        ['post',  `${detailId}`],
+        requestUpdateLike
+    );
+
+    const readMutation = useMutationReactQuery(
+        ['post',  `${detailId}`],
+        requestUpdateRead
+    );
 
     const clickLikeButton = () => {
         //number는 원시 타입(primitive type)
         //새 값을 계산하면 원래 값과 참조가 완전히 달라짐
-        //setLike(like+1);
-        setLike(like => like + 1);
-       
+        let newLike = like +1;
+        setLike(newLike);
+        console.log("버튼이 눌리니?");
+
+        //useQuery는 컴포넌트가 마운트되면서 자동으로 실행이되는 반면, useMutation은 함수를 직접 실행
+       likeMutation.mutate({detailId: detailId , like: newLike});
+       console.log("버튼이 눌리니?");
     }
     
     const clickUpdateButton = () => {
         window.location.href = `/detail/:${detailId}/edit`;
     }
 
-    useEffect (() => {
-        console.log("useEffect like에 들어옴");
-        //if (like == 0) return;
-        //TypeScript의 "Optional Chaining" 문법
-        //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
-        if (postData?.likeCount == undefined) return;
-        if (like == postData?.likeCount) return;
-        console.log("postData?.likeCount: "+postData?.likeCount);
-        console.log("like : "+like);
-        requestUpdateLike({detailId},like);
-    },[like]);
+    // useEffect (() => {
+    //     console.log("useEffect like에 들어옴");
+        
+    //     //TypeScript의 "Optional Chaining" 문법
+    //     //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
+    //     if (postData?.likeCount == undefined) return;
+    //     if (like == postData?.likeCount) return;
+    //     console.log("postData?.likeCount: "+postData?.likeCount);
+    //     console.log("like : "+like);
+    //     requestUpdateLike({detailId},like);
+    // },[like]);
     
 
     useEffect (() => {
         console.log("useEffect read에 들어옴");
-        //if (read == 0) return;
+       
         //TypeScript의 "Optional Chaining" 문법
         //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
         if (postData?.readCount == undefined) return;
         if (read == postData?.readCount) return;
         console.log("postData?.readCount : "+postData?.readCount);
         console.log("read : "+read);
-        requestUpdateRead({detailId}, read);
+        readMutation.mutate({detailId: detailId , read: read});
     },[read]);
 
 
-    //useQuery는 훅이므로 컴포넌트나 커스텀 훅에서만 호출 가능
-    const {data, isLoading, isFetching, error } =useQuery({
-        queryKey: ['post', detailId],
-        queryFn: () => requestPost({detailId}),
-        //staleTime: 6000 ,
-    })
+    useEffect(() => {
+        console.log("useEffect data에 들어옴");
+        if (data) {
+            console.log("if data안에 들어옴");
+            setPostData(data);
+            setId(data.id);
+            setLike(data.likeCount);
+            setRead(data.readCount + 1);
+            setContent(data.content);
+            setTitle(data.title);
+            setWriter(data.writer);
+            setDate(data.regDate);
 
-    console.log("useQuery 사용");
-    console.log(data);
-    console.log("isLoading : "+isLoading);
-    console.log("isFetching : "+isFetching);
-    console.log(error);
+            console.log("첫 useEffect 렌더링시 값들");
+            console.log(data);
+            console.log(data.likeCount);
+            console.log(data.readCount+1);
+            console.log(data.content);
+            console.log(data.title);
+            console.log(data.writer);
+            console.log(data.regDate);
+        }
+    }, [data]);
 
-
-    // useEffect(() => {
-    //     console.log("useEffect data에 들어옴");
-    //     if (data) {
-    //         console.log("if data안에 들어옴");
-    //         setPostData(data);
-    //         setLike(data.likeCount);
-    //         setRead(data.readCount + 1);
-    //         setContent(data.content);
-    //         setTitle(data.title);
-    //         setWriter(data.writer);
-    //         setDate(data.regDate);
-
-    //         console.log("첫 useEffect 렌더링시 값들");
-    //         console.log(data);
-    //         console.log(data.likeCount);
-    //         console.log(data.readCount+1);
-    //         console.log(data.content);
-    //         console.log(data.title);
-    //         console.log(data.writer);
-    //         console.log(data.regDate);
-    //     }
-    // }, [data]);
-
-
+    
     return (
 
         <div css = {DetailDivStyle} >
@@ -240,7 +236,9 @@ const Detail = ({detailId}:DetailProps) => {
                 }}> 
                     
                     <div css = {[TitleDivStyle50, rightDivBorder]}>번호</div>
-                    {/* <div css = {[TitleDivStyle50, rightDivBorder] }>{data ? data.id : '로딩중'}</div> */}
+                    {/* id 상태는 숫자 0으로 초기화돼서, <div>{id}</div>는 항상 보임.
+                    그래서 id는 바로 렌더링 가능하고, postData?.id나 data?.id는 데이터가 들어오기 전에는 안 보이는 것처럼 보임 */}
+                    <div css = {[TitleDivStyle50, rightDivBorder] }>{id}</div>
 
                 </Box>
                 
@@ -255,7 +253,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}>
 
                     <div css = {[TitleDivStyle100, rightDivBorder]}>작성일시</div>
-                    <div css = {[TitleDivStyle200, rightDivBorder]}>{date}</div>
+                    <div css = {[TitleDivStyle200, rightDivBorder,smallFontSize]}>{date}</div>
 
                 </Box>
 
@@ -361,12 +359,12 @@ const Detail = ({detailId}:DetailProps) => {
                 margin: "auto",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "flex-end",
+                justifyContent: "space-evenly",
             
             }}>
                 <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickUpdateButton();}}>수정하기</Button>
                 <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {}}>삭제하기</Button>
-                <Button sx={{width:150, height:50, marginLeft:30}} variant="contained" onClick = {() => {clickLikeButton();}}>좋아요 누르기</Button>
+                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {console.log("버튼 클릭 직전"); clickLikeButton();}}>좋아요 누르기</Button>
             </Box>
            
         </div>

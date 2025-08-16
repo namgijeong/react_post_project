@@ -9,7 +9,7 @@ import {Comment} from "../interface/Comment";
 
 export const makeOnePostData = () => {
     const id = faker.number.int({ min: 1, max: 999 });
-    const title = faker.lorem.sentence();
+    const title = faker.lorem.words(1);
     const writer = faker.person.fullName();
     const regDate = faker.date.recent();
     const readCount = faker.number.int({ min: 1, max: 999 });
@@ -24,6 +24,7 @@ export const makeMultiplePostData = () => {
     const posts:Array<Post> = [];
     for (let i = 0; i < 30 ; i++) {
         const onePost = makeOnePostData();
+        onePost.id = (i+1);
         posts.push(onePost);
     }
     
@@ -44,6 +45,7 @@ export const makeMultipleCommentData = () => {
     const comments:Array<Comment> = [];
     for (let i = 0; i < 30 ; i++) {
         const oneComment = makeOneCommentData();
+        oneComment.id = (i+1);
         comments.push(oneComment);
     }    
     

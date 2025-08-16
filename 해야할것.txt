@@ -84,6 +84,8 @@ react query mutation 쓰는 법
 https://somm12.tistory.com/234
 https://tanstack.com/query/v4/docs/framework/react/guides/mutations
 https://tanstack.com/query/v4/docs/framework/react/guides/invalidations-from-mutations
+https://velog.io/@hyunjun9788/React-Query-useMutation
+https://devts.tistory.com/225
 
 faker-js 쓰는법
 https://velog.io/@moon7058/0610
