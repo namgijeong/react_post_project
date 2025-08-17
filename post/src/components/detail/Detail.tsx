@@ -25,6 +25,10 @@ import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
 import { useQuery } from '@tanstack/react-query';
 import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
 
+import useStore from '../../store/useStore';
+import { Level } from '../../interface/Level';
+import { UserLevel } from '../../enum/UserLevel';
+
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -98,6 +102,9 @@ const Detail = ({detailId}:DetailProps) => {
     const [writer,setWriter] = useState<string>('');
     const [date,setDate] = useState<string>('');
     let readCount = 0;
+
+    let level = useStore((state) => state.level);
+    let changeLevel = useStore((state) => state.changeLevel);
 
     const requestPost = async (detailId:number) => {
 
@@ -355,8 +362,16 @@ const Detail = ({detailId}:DetailProps) => {
                 justifyContent: "space-evenly",
             
             }}>
-                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickUpdateButton();}}>수정하기</Button>
-                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {}}>삭제하기</Button>
+                {level == UserLevel.Admin ? ( 
+                    <>
+                     <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickUpdateButton();}}>수정하기</Button>
+                     <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {}}>삭제하기</Button> 
+                    </>
+                ) :  <></>
+                    
+                }
+               
+                
                 <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {console.log("버튼 클릭 직전"); clickLikeButton();}}>좋아요 누르기</Button>
             </Box>
            

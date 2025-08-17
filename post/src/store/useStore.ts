@@ -2,6 +2,29 @@ import {create} from 'zustand'
 import { persist } from 'zustand/middleware';
 import { Post } from '../interface/Post';
 import postsData from '../mocks/dummy_post.json';
+import { Level } from '../interface/Level';
+import { UserLevel } from '../enum/UserLevel';
+
+//브라우저 새로고침(F5) 또는 직접 URL 접근
+//이 경우는 브라우저가 완전히 새로 로드되므로 JS 메모리 상태(Zustand)는 초기값으로
+//persist middleware localstorage 저장 
+const useStore = create<Level>()(
+    persist(
+        (set) => ({
+            level: UserLevel.Visitor,
+            changeLevel: (newLevel) => set(( ) => ({level: newLevel})),
+        }),
+
+            { name: 'level-storage' } // localStorage key
+    )
+   
+)
+
+export default useStore;
+
+
+
+
 
 //{"id":1, "title":"test1", "writer": "jinseong", "regDate":"2025-08-11", "readCount":1, "likeCount":10 , "content":"안녕하세요1"},
 //인터페이스와 매핑
