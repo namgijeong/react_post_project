@@ -21,3 +21,12 @@ export const useGoWritePost = () => {
     
     return go;
 }
+
+export const useGoListPost = () => {
+    const navigate = useNavigate();
+    const go = () => {
+        navigate(`/`);
+    }
+        
+    return go;
+}

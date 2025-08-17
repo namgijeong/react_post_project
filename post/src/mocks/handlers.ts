@@ -90,6 +90,27 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
+    http.post('/post', async({params, request}) => {
+        const bodyData =await request.json() as Post;
+        console.log("msw bodyData : "+bodyData);
+
+        //데이터 배열과 연동
+        let posts: Array<Post> = postsData;
+        //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
+        const newArr = [...postsData, bodyData];
+        console.log(newArr);
+        posts = newArr;
+        postsData = newArr;
+
+        console.log("바뀐 comments 데이터");
+        console.log(posts);
+
+        //저장소 데이터 배열에 덮어쓰기
+        changeCommentsData(newArr);
+        
+        return HttpResponse.json({success:true});
+    }),
+
     http.get('/comments', async({params, request}) => {
         //데이터 배열과 연동
         const comments: Array<MyComment> = commentsData;

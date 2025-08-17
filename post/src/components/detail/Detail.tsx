@@ -18,7 +18,6 @@ import { Post } from '../../interface/Post';
 import {LikeVariables} from '../../interface/LikeVariables';
 import {ReadVariables} from '../../interface/ReadVariables';
 
-// import useStore from '../../store/useStore';
 import axios from 'axios';
 import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
 

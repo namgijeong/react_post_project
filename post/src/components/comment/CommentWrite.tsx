@@ -46,7 +46,7 @@ const CommentWrite = () => {
           return data;
     }
 
-    //<Comment, Comment>를 줬는데도 CharacterData 라는 정체불명의 타입이 나온다는 건…
+    //mutate에 comment타입의 객체를 넣었더니 계속 에러가 났다..
     //거의 100% Comment 라는 이름이 네이티브 DOM 타입(Comment = HTML 주석 노드) 과 충돌
     const registerMutation = useMutationReactQuery(
         ['comments'],
