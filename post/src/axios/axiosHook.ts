@@ -43,6 +43,19 @@ export const axiosPutData = async <T>(request:AxiosRequest<T>) =>{
 
 }
 
+export const axiosPutDataWithBody = async <T>(request:AxiosRequest<T>) =>{
+
+    let responseData;
+    
+    const response = await axios.put(request.url, request.data);
+    responseData = response.data;
+    console.log("axios put responseData");
+    console.log(responseData);
+
+    return responseData;
+
+}
+
 export const axiosDeleteData = async <T>(request:AxiosRequest<T>) =>{
 
     let responseData;

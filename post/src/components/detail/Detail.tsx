@@ -17,6 +17,7 @@ import { DetailProps } from '../../interface/DetailProps';
 import { Post } from '../../interface/Post';
 import {LikeVariables} from '../../interface/LikeVariables';
 import {ReadVariables} from '../../interface/ReadVariables';
+import { InputPost } from '../../interface/InputPost';
 
 import axios from 'axios';
 import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
@@ -28,6 +29,7 @@ import useStore from '../../store/useStore';
 import { Level } from '../../interface/Level';
 import { UserLevel } from '../../enum/UserLevel';
 
+import { useGoUpdatePost } from '../../router/routerHook';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -164,8 +166,12 @@ const Detail = ({detailId}:DetailProps) => {
         
     }
     
+    //커스텀 훅에서 일반함수를 반환 
+    let go = useGoUpdatePost();
+    
     const clickUpdateButton = () => {
-        window.location.href = `/detail/:${detailId}/edit`;
+        let postData:InputPost = {title:title, writer:writer, content:content};
+        go(detailId,postData);
     }
 
     

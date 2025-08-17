@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams  } from 'react-router-dom';
+import { InputPost } from '../interface/InputPost';
 
 
 //커스텀 훅에서 일반함수를 반환 
@@ -26,6 +27,17 @@ export const useGoListPost = () => {
     const navigate = useNavigate();
     const go = () => {
         navigate(`/`);
+    }
+        
+    return go;
+}
+
+export const useGoUpdatePost = () => {
+    const navigate = useNavigate();
+    const go = (id:number, data:InputPost) => {
+        navigate(`/detail/${id}/edit`,
+            {state:data}
+        );
     }
         
     return go;

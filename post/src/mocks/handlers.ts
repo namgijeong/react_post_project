@@ -111,6 +111,33 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
+    http.put('/post/:id', async({params, request}) => {
+        const {id} =params;
+
+        const bodyData =await request.json() as Post;
+        console.log("msw bodyData : "+bodyData);
+        console.log("msw id : "+id);
+
+        //데이터 배열과 연동
+        let posts: Array<Post> = postsData;
+        //객체의 복사와 일부 속성 덮어쓰기기
+        const newArr = posts.map(item =>
+            item.id === Number(id) ? { ...item, title: bodyData.title, writer:bodyData.writer, content:bodyData.content, regDate:bodyData.regDate} : item
+        );
+
+        console.log(newArr);
+        posts = newArr;
+        postsData = newArr;
+    
+        console.log("바뀐 posts 데이터");
+        console.log(posts);
+    
+        //저장소 데이터 배열에 덮어쓰기
+        changePostsData(newArr);
+       
+        return HttpResponse.json({success:true});
+    }),
+
     http.get('/comments', async({params, request}) => {
         //데이터 배열과 연동
         const comments: Array<MyComment> = commentsData;
