@@ -39,7 +39,7 @@ const CommentTable = () => {
   const requestComments = async () => {
       //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
       //url에 포함시키는것은 경로 파라미터
-      const data = await axiosGetData<AxiosRequest>({url:"/comments"});
+      const data = await axiosGetData<string>({url:"/comments", data:""});
       console.log("axios comments 결과");
       console.log(data);
       return data;
@@ -48,8 +48,8 @@ const CommentTable = () => {
   const deleteComment = async (id:number) => {
       //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
       //url에 포함시키는것은 경로 파라미터
-      const data = await axiosDeleteData<AxiosRequest>({url:`/comment/${id}`});
-      console.log("axios comments 결과");
+      const data = await axiosDeleteData<string>({url:`/comment/${id}`, data:""});
+      console.log("axios comment 결과");
       console.log(data);
       return data;
   }

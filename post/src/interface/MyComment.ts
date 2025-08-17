@@ -1,4 +1,4 @@
-export interface Comment{
+export interface MyComment{
     id: number;
     writer:string;
     regDate:Date;

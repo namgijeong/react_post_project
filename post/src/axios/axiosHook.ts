@@ -6,7 +6,7 @@ import { AxiosResponse } from "../interface/AxiosResponse";
 //useQuery의 queryFn에서 쓰기 위해서는 훅으로 정의하고 쓰면 안된다고 한다.
 //useQuery는 훅이지만 queryFn은 일반 함수
 //따라서 useState와 useEffect를 뺀다.
-export const axiosGetData = async <T>(request:AxiosRequest) =>{
+export const axiosGetData = async <T>(request:AxiosRequest<T>) =>{
 
     let responseData;
     
@@ -18,7 +18,19 @@ export const axiosGetData = async <T>(request:AxiosRequest) =>{
     return responseData;
 }
 
-export const axiosPutData = async <T>(request:AxiosRequest) =>{
+export const axiosPostData = async <T>(request:AxiosRequest<T>) =>{
+
+    let responseData;
+    
+    const response = await axios.post(request.url, request.data);
+    responseData = response.data;
+    console.log("axios post responseData");
+    console.log(responseData);
+
+    return responseData;
+}
+
+export const axiosPutData = async <T>(request:AxiosRequest<T>) =>{
 
     let responseData;
     
@@ -31,7 +43,7 @@ export const axiosPutData = async <T>(request:AxiosRequest) =>{
 
 }
 
-export const axiosDeleteData = async <T>(request:AxiosRequest) =>{
+export const axiosDeleteData = async <T>(request:AxiosRequest<T>) =>{
 
     let responseData;
     

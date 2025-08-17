@@ -1,6 +1,6 @@
 import { makeMultiplePostData, makeMultipleCommentData} from "./makeFakerData";
 import { Post } from '../interface/Post';
-import { Comment } from '../interface/Comment';
+import { MyComment } from '../interface/MyComment';
 
 // let postsData = makeMultiplePostData();
 // let commentsData = makeMultipleCommentData();
@@ -8,7 +8,7 @@ import { Comment } from '../interface/Comment';
 //계속 값이 랜덤으로 바뀌어서 게시판 상세페이지에 들어갈때 못찾기때문
 declare global {
   var POSTS_DATA: Post[] | undefined;
-  var COMMENTS_DATA: Comment[] | undefined;
+  var COMMENTS_DATA: MyComment[] | undefined;
 }
 
 if (!globalThis.POSTS_DATA) {
@@ -27,7 +27,7 @@ export const changePostsData = (newPostsData:Array<Post>) => {
     globalThis.POSTS_DATA = newPostsData;
     return globalThis.POSTS_DATA!;
 }
-export const changeCommentsData = (newCommentsData:Array<Comment>) => {
+export const changeCommentsData = (newCommentsData:Array<MyComment>) => {
     globalThis.COMMENTS_DATA = newCommentsData;
     return globalThis.COMMENTS_DATA!;
 }

@@ -110,7 +110,7 @@ const Detail = ({detailId}:DetailProps) => {
 
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터
-        const data = await axiosGetData({url:`/post/${detailId}`});
+        const data = await axiosGetData<string>({url:`/post/${detailId}`, data:""});
         console.log("request post axios 결과");
         console.log(data);
         return data;
@@ -125,7 +125,7 @@ const Detail = ({detailId}:DetailProps) => {
 
         console.log("detailId: " , detailId);
         console.log("like: " , like);
-        const data = await axiosPutData({url:`/like/${detailId}/${like}`});
+        const data = await axiosPutData<string>({url:`/like/${detailId}/${like}`, data:""});
         console.log("update like axios 수행");
         return data;
     }
@@ -135,7 +135,7 @@ const Detail = ({detailId}:DetailProps) => {
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-        const data = await axiosPutData({url:`/read/${detailId}/${read}`});
+        const data = await axiosPutData<string>({url:`/read/${detailId}/${read}`, data:""});
         console.log("update read axios 수행");
         return data;
     }

@@ -1,6 +1,6 @@
 import { fakerKO as faker } from "@faker-js/faker";
 import { Post } from "../interface/Post";
-import {Comment} from "../interface/Comment";
+import {MyComment} from "../interface/MyComment";
 
 // Named Export
 // 여러 개를 한 파일에서 내보낼 수 있음.
@@ -37,12 +37,12 @@ export const makeOneCommentData = () => {
     const regDate = faker.date.recent();
     const content = faker.lorem.paragraph(); 
 
-    const oneComment:Comment = {id:id,  writer:writer, regDate:regDate, content:content}
+    const oneComment:MyComment = {id:id,  writer:writer, regDate:regDate, content:content}
     return oneComment;
 }
 
 export const makeMultipleCommentData = () => {
-    const comments:Array<Comment> = [];
+    const comments:Array<MyComment> = [];
     for (let i = 0; i < 30 ; i++) {
         const oneComment = makeOneCommentData();
         oneComment.id = (i+1);

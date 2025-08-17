@@ -51,7 +51,7 @@ const Table = () => {
   const requestPosts = async () => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터
-    const data = await axiosGetData<AxiosRequest>({url:"/posts"});
+    const data = await axiosGetData<string>({url:"/posts", data:""});
     console.log("axios 결과");
     console.log(data);
     return data;

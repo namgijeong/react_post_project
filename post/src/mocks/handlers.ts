@@ -1,7 +1,7 @@
 //intercept할 API들의 요청과 응답을 작성하는 곳
 import { HttpResponse, http } from "msw";
 import { Post } from '../interface/Post';
-import { Comment } from '../interface/Comment';
+import { MyComment } from '../interface/MyComment';
 // import useStore from '../components/store/useStore';
 import {getPostsData, getCommentsData, changePostsData, changeCommentsData } from '../faker/storeFakerData';
 
@@ -92,19 +92,39 @@ export const handlers = [
 
     http.get('/comments', async({params, request}) => {
         //데이터 배열과 연동
-        const comments: Array<Comment> = commentsData;
+        const comments: Array<MyComment> = commentsData;
         console.log("/posts msw에 들어옴");
         console.log(comments);
         return HttpResponse.json(comments);
     }),
 
+    http.post('/comment', async({params, request}) => {
+        const bodyData =await request.json() as MyComment;
+        console.log("msw bodyData : "+bodyData);
+
+        //데이터 배열과 연동
+        let comments: Array<MyComment> = commentsData;
+        //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
+        const newArr = [...comments, bodyData];
+        console.log(newArr);
+        comments = newArr;
+        commentsData = newArr;
+
+        console.log("바뀐 comments 데이터");
+        console.log(comments);
+
+        //저장소 데이터 배열에 덮어쓰기
+        changeCommentsData(newArr);
+        
+        return HttpResponse.json({success:true});
+    }),
 
     http.delete('/comment/:id', async({params, request}) => {
         const {id} =params;
         console.log("msw id : "+id);
 
         //데이터 배열과 연동
-        let comments: Array<Comment> = commentsData;
+        let comments: Array<MyComment> = commentsData;
         //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
         const newArr = comments.filter(item =>
             item.id !== Number(id)
