@@ -12,7 +12,7 @@ export const axiosGetData = async <T>(request:AxiosRequest) =>{
     
     const response = await axios.get(request.url);
     responseData = response.data;
-    console.log("axios responseData");
+    console.log("axios get responseData");
     console.log(responseData);
 
     return responseData;
@@ -24,13 +24,25 @@ export const axiosPutData = async <T>(request:AxiosRequest) =>{
     
     const response = await axios.put(request.url);
     responseData = response.data;
-    console.log("axios responseData");
+    console.log("axios put responseData");
     console.log(responseData);
 
     return responseData;
 
 }
 
+export const axiosDeleteData = async <T>(request:AxiosRequest) =>{
+
+    let responseData;
+    
+    const response = await axios.delete(request.url);
+    responseData = response.data;
+    console.log("axios delete responseData");
+    console.log(responseData);
+
+    return responseData;
+
+}
 
 //훅안에서 제네릭을 쓸려면 훅 자체도 제네릭이어야함
 

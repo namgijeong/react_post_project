@@ -27,7 +27,7 @@ export const changePostsData = (newPostsData:Array<Post>) => {
     globalThis.POSTS_DATA = newPostsData;
     return globalThis.POSTS_DATA!;
 }
-export const changeCommentssData = (newCommentsData:Array<Comment>) => {
+export const changeCommentsData = (newCommentsData:Array<Comment>) => {
     globalThis.COMMENTS_DATA = newCommentsData;
     return globalThis.COMMENTS_DATA!;
 }

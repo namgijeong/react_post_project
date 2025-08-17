@@ -3,7 +3,7 @@ import { HttpResponse, http } from "msw";
 import { Post } from '../interface/Post';
 import { Comment } from '../interface/Comment';
 // import useStore from '../components/store/useStore';
-import {getPostsData, getCommentsData, changePostsData, changeCommentssData } from '../faker/storeFakerData';
+import {getPostsData, getCommentsData, changePostsData, changeCommentsData } from '../faker/storeFakerData';
 
 let postsData = getPostsData();
 let commentsData = getCommentsData();
@@ -96,6 +96,31 @@ export const handlers = [
         console.log("/posts msw에 들어옴");
         console.log(comments);
         return HttpResponse.json(comments);
+    }),
+
+
+    http.delete('/comment/:id', async({params, request}) => {
+        const {id} =params;
+        console.log("msw id : "+id);
+
+        //데이터 배열과 연동
+        let comments: Array<Comment> = commentsData;
+        //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
+        const newArr = comments.filter(item =>
+            item.id !== Number(id)
+        );
+
+        console.log(newArr);
+        comments = newArr;
+        commentsData = newArr;
+    
+        console.log("바뀐 comments 데이터");
+        console.log(comments);
+    
+        //저장소 데이터 배열에 덮어쓰기
+        changeCommentsData(newArr);
+       
+        return HttpResponse.json({success:true});
     }),
 
 

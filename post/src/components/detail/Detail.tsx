@@ -141,7 +141,7 @@ const Detail = ({detailId}:DetailProps) => {
     }
 
     const {data, isLoading, isFetching, error} = useReactQuery(
-            ['post', `${detailId}`], () => requestPost(detailId)
+        ['post', `${detailId}`], () => requestPost(detailId)
     );
     
     const likeMutation = useMutationReactQuery(

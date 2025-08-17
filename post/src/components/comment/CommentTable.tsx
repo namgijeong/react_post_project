@@ -2,16 +2,16 @@ import React, {useEffect, useState} from 'react';
 
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowParams, GridRenderCellParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { GridRowId } from '@mui/x-data-grid';
 
 import axios from 'axios';
-import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
+import { axiosGetData, axiosPutData, axiosDeleteData } from '../../axios/axiosHook';
 
 import { useQuery } from '@tanstack/react-query';
-import { useReactQuery } from '../../reactquery/reactqueryHook';
+import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
 
 import { Post } from '../../interface/Post';
 import { AxiosRequest } from '../../interface/AxiosRequest';
@@ -31,10 +31,6 @@ let rows: TableRow[] = [];
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-//params.id => MUI DataGrid의 GridRowId 타입
-const deleteClick = (id:GridRowId) => {
-  console.log(`${id}번 게시글 삭제`);
-}
 
 const CommentTable = () => {
 
@@ -49,9 +45,24 @@ const CommentTable = () => {
       return data;
   }
 
+  const deleteComment = async (id:number) => {
+      //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+      //url에 포함시키는것은 경로 파라미터
+      const data = await axiosDeleteData<AxiosRequest>({url:`/comment/${id}`});
+      console.log("axios comments 결과");
+      console.log(data);
+      return data;
+  }
+
   const {data, isLoading, isFetching, error} = useReactQuery(
-      ['comments'], requestComments
+    ['comments'], requestComments
   );
+
+  const deleteMutation = useMutationReactQuery(
+    ['comments'],
+    deleteComment
+  );
+
 
   useEffect(() => {
     if (data) {
@@ -64,6 +75,14 @@ const CommentTable = () => {
 
   let level = useStore((state) => state.level);
   let changeLevel = useStore((state) => state.changeLevel);
+
+  //renderCell의 params 타입은 GridRenderCellParams
+  const deleteClick = (params: GridRenderCellParams) => {
+    const clickedId = Number(params.id);
+    console.log(`${clickedId}번 게시글 삭제`);
+    //useQuery는 컴포넌트가 마운트되면서 자동으로 실행이되는 반면, useMutation은 함수를 직접 실행
+        deleteMutation.mutate(clickedId);
+  }
 
   const columns: GridColDef[] = [
           //`field`는 데이터 접근 시 이름
@@ -85,7 +104,7 @@ const CommentTable = () => {
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => deleteClick(params.id)}
+                  onClick={() => deleteClick(params)}
                 >
                   삭제
                 </Button>
@@ -93,6 +112,7 @@ const CommentTable = () => {
             )
           }
   ];
+
 
   // {/* //Paper => mui 컨테이너 컴포넌트 종이느낌
   // //sx=> mui에서 스타일을 바로 작성할 수 있게 해주는 prop */}
