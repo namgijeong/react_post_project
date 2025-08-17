@@ -367,7 +367,7 @@ const Detail = ({detailId}:DetailProps) => {
                      <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickUpdateButton();}}>수정하기</Button>
                      <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {}}>삭제하기</Button> 
                     </>
-                ) :  <></>
+                ) :  null
                     
                 }
                

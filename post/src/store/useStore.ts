@@ -11,7 +11,7 @@ import { UserLevel } from '../enum/UserLevel';
 const useStore = create<Level>()(
     persist(
         (set) => ({
-            level: UserLevel.Visitor,
+            level: UserLevel.Admin,
             changeLevel: (newLevel) => set(( ) => ({level: newLevel})),
         }),
 

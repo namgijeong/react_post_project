@@ -6,6 +6,7 @@ import { Comment } from '../interface/Comment';
 import {getPostsData, getCommentsData, changePostsData, changeCommentssData } from '../faker/storeFakerData';
 
 let postsData = getPostsData();
+let commentsData = getCommentsData();
 
 export const handlers = [
     
@@ -89,7 +90,13 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
-
+    http.get('/comments', async({params, request}) => {
+        //데이터 배열과 연동
+        const comments: Array<Comment> = commentsData;
+        console.log("/posts msw에 들어옴");
+        console.log(comments);
+        return HttpResponse.json(comments);
+    }),
 
 
     // http.get('/post/:id', async({params, request}) => {
