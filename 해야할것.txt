@@ -45,6 +45,60 @@ react router dom hooks 공식홈페이지 봐라
 2. interface에 따라 faker 데이터를 만든다.
 3.axios를 하나의 hook, 공통화를 한다
 
+---------------------------------------------------------------------------------------------------------------------------
+두번째 피드백
+
+1. api 문서 다시 
+swagger로 api 문서 작성=> 서버끼리 API만
+들어갈 항목=> API name, method type, desc, header, parameter, example, result json 형태
+객체면 어느 형태인지? json인지?
+Array<Post>면 => required 한 필드가 있는지???? 그 Post 안에 요소들 자세히 
+
+2. api 명세 고칠 요소들
+-좋아요 수, 조회수 동시에 누르면 
+A사람 => 34 api 요청, B사람=> 34 api 요청 동시에 변한다.
+=> 좋아요 수, 조회 수 는 모두 백엔드 단에서 계산하는것
+
+-게시물 수정하는데 likeCount, readCount는 x. regDate는 서버에서 현재값 넣어줄껀데 이것도 넘길 필요없음
+title, writer, content만 넘겨줘라
+
+-댓글 리스트 get / comments => 전체 조회 api 고쳐라 
+post Id 별로 comment 페이지 별로 조회하는것 해라
+
+- 왜 등록할때 id를 전부 랜덤으로 주냐 => 이건 서버에서 할일.  프론트에서 주지마라 
+
+
+3. routerHooks 부분 통합을 하지 못하고 너무 중복되었다
+커스텀 훅스에서 url 파라미터 하나만 받는식으로 하나만 리턴
+굳이 url 별로 분리를 하고 싶다면?
+url 파리미터 받는 함수를 활용하여 여러 함수를 만든후 return { 함수1  , 함수2  , 함수3...}
+
+** return 자체가 useQuery같은 hook이면 별개로 만듬
+** return 자체가 함수이면 공통으로 리턴
+
+
+4. useParams, useNavigator도 마찬가지로 커스텀 훅을 만들때 맨 상단에 선언하고 공통으로 쓸 방법 생각해라
+
+5. axios에서 method post,get 이런식으로 따로 지정가능 
+굳이 axios.put , axios.get 이런식으로  일일이 함수 나눠서 만들지 마라 
+
+6.  서비스단 - hooks 단 분리 하면서 타입추론
+
+
+7. 응답값, 요청값 타입 추론 가능하게
+현재 Promise<T>인데  Promise<타입지정> 이 되도록 해라
+응답값, 요청값 인테페이스 다시 지정 => 현재 코드로는 막상 reactQuery 사용할때 타입 지정 자체가 되지않는다.
+제네릭 조차도 제대로 타입을 지정하고 써야하는데 선언만 하고 못쓴 상황
+
+8. registerComment 같이 axios관련 함수 불러오는 로직도 따로 
+
+9. AxiosRequest<T>에 타입 추론 안됨.. any 쓰지말라
+
+10. reactquery 썼는데  useEffect 사용해서 값을 넣고, rows = {rows}로 했는데 이러면 상태관리가 되지 않는다.
+reactquery의 data 써라
+
+
+---------------------------------------------------------------------------------------------------------------------------
 
 react에 typescript 연결법
 https://sunho-doing.tistory.com/entry/Reactjs-React%EC%97%90-Typescript-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0
@@ -107,6 +161,9 @@ handleSubmit이나 getValues() 호출 시점에 값 가져옴
 
 react hook form 사용법
 https://www.daleseo.com/react-hook-form/
+
+rest api 문서 작성 방법
+https://apidog.com/kr/blog/apps-to-generate-rest-api-documentation-3/
 
 ECMA2015(ES6)
 https://poiemaweb.com/

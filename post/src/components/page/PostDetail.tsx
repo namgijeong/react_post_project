@@ -18,6 +18,8 @@ const PostDetail = () => {
     //객체 구조분해
     const {id} = useParams();
     const  detailId = id ? parseInt(id, 10) : null;
+
+    
     if (detailId == null) {
         return (
             <div>

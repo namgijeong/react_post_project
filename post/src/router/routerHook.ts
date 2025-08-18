@@ -17,7 +17,7 @@ export const useGoDetailPost = () => {
 export const useGoWritePost = () => {
     const navigate = useNavigate();
     const go = () => {
-        navigate(`/write/`);
+        navigate(`/write`);
     }
     
     return go;

@@ -90,7 +90,7 @@ const CommentTable = () => {
           {field: 'id', headerName: '번호', width: 150},
           {field: 'writer', headerName: '작성자', width: 150},
           {field: 'regDate', headerName: '작성일시', width: 150},
-          {field: 'content', headerName: '안녕하세요', width: 300},
+          {field: 'content', headerName: '내용', width: 300},
 
           //renderCell => (params: GridRenderCellParams<R, V, F>) => React.ReactNode
           //params => 셀과 행에 대한 모든 정보가 담긴 객체
@@ -117,6 +117,7 @@ const CommentTable = () => {
   // {/* //Paper => mui 컨테이너 컴포넌트 종이느낌
   // //sx=> mui에서 스타일을 바로 작성할 수 있게 해주는 prop */}
   return (
+  
         
     <Paper sx={{ height: 400, width: 865, margin: 'auto' }}>
       <DataGrid
