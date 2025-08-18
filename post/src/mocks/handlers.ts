@@ -10,6 +10,7 @@ let commentsData = getCommentsData();
 
 export const handlers = [
     
+    //게시글 상세 조회
     http.get('/post/:id', async({params, request}) => {
         //const data = await request.json();
 
@@ -30,6 +31,7 @@ export const handlers = [
         return HttpResponse.json(findPost);
     }),
 
+    //게시글 리스트 불러오기 
     http.get('/posts', async({params, request}) => {
         //데이터 배열과 연동
         const posts: Array<Post> = postsData;
@@ -39,6 +41,7 @@ export const handlers = [
         return HttpResponse.json(findPosts);
     }),
 
+    //게시글 상세 페이지 좋아요 버튼 누르기 
     http.put('/like/:id/:like', async({params, request}) => {
         console.log("like handler 진입");
         const {id, like} =params;
@@ -65,6 +68,7 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
+    //게시글 상세페이지 진입시 조회수 올리기
     http.put('/read/:id/:read', async({params, request}) => {
         const {id, read} =params;
         console.log("msw id : "+id);
@@ -90,6 +94,7 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
+    //게시글 작성하기 
     http.post('/post', async({params, request}) => {
         const bodyData =await request.json() as Post;
         console.log("msw bodyData : "+bodyData);
@@ -106,11 +111,12 @@ export const handlers = [
         console.log(posts);
 
         //저장소 데이터 배열에 덮어쓰기
-        changeCommentsData(newArr);
+        changePostsData(newArr);
         
         return HttpResponse.json({success:true});
     }),
 
+    //게시글 수정하기
     http.put('/post/:id', async({params, request}) => {
         const {id} =params;
 
@@ -138,6 +144,32 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
+    //게시글 삭제하기
+    http.delete('/post/:id', async({params, request}) => {
+        const {id} =params;
+        console.log("msw id : "+id);
+
+        //데이터 배열과 연동
+        let posts: Array<Post> = postsData;
+        //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
+        const newArr = posts.filter(item =>
+            item.id !== Number(id)
+        );
+
+        console.log(newArr);
+        posts = newArr;
+        postsData = newArr;
+    
+        console.log("바뀐 posts 데이터");
+        console.log(posts);
+    
+        //저장소 데이터 배열에 덮어쓰기
+        changePostsData(newArr);
+       
+        return HttpResponse.json({success:true});
+    }),
+
+    //댓글 리스트 조회
     http.get('/comments', async({params, request}) => {
         //데이터 배열과 연동
         const comments: Array<MyComment> = commentsData;
@@ -146,6 +178,7 @@ export const handlers = [
         return HttpResponse.json(comments);
     }),
 
+    //댓글 등록하기
     http.post('/comment', async({params, request}) => {
         const bodyData =await request.json() as MyComment;
         console.log("msw bodyData : "+bodyData);
@@ -167,6 +200,7 @@ export const handlers = [
         return HttpResponse.json({success:true});
     }),
 
+    //댓글 삭제하기
     http.delete('/comment/:id', async({params, request}) => {
         const {id} =params;
         console.log("msw id : "+id);

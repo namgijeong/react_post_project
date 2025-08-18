@@ -20,7 +20,7 @@ import {ReadVariables} from '../../interface/ReadVariables';
 import { InputPost } from '../../interface/InputPost';
 
 import axios from 'axios';
-import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
+import { axiosGetData, axiosPutData, axiosDeleteData } from '../../axios/axiosHook';
 
 import { useQuery } from '@tanstack/react-query';
 import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
@@ -29,7 +29,7 @@ import useStore from '../../store/useStore';
 import { Level } from '../../interface/Level';
 import { UserLevel } from '../../enum/UserLevel';
 
-import { useGoUpdatePost } from '../../router/routerHook';
+import { useGoUpdatePost, useGoListPost } from '../../router/routerHook';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -141,6 +141,16 @@ const Detail = ({detailId}:DetailProps) => {
         return data;
     }
 
+    const requestDeletePost = async (detailId:number) => {
+    
+        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+        //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+
+        const data = await axiosDeleteData<string>({url:`/post/${detailId}`, data:""});
+        console.log("delete post axios 수행");
+        return data;
+    }
+
     const {data, isLoading, isFetching, error} = useReactQuery(
         ['post', `${detailId}`], () => requestPost(detailId)
     );
@@ -155,6 +165,11 @@ const Detail = ({detailId}:DetailProps) => {
         requestUpdateRead
     );
 
+    const deleteMutation = useMutationReactQuery(
+        ['post',  `${detailId}`],
+        requestDeletePost
+    );
+
     const clickLikeButton = () => {
         //number는 원시 타입(primitive type)
         //새 값을 계산하면 원래 값과 참조가 완전히 달라짐
@@ -167,11 +182,17 @@ const Detail = ({detailId}:DetailProps) => {
     }
     
     //커스텀 훅에서 일반함수를 반환 
-    let go = useGoUpdatePost();
-    
+    let goUpdate = useGoUpdatePost();
+    let goList = useGoListPost();
+
     const clickUpdateButton = () => {
         let postData:InputPost = {title:title, writer:writer, content:content};
-        go(detailId,postData);
+        goUpdate(detailId,postData);
+    }
+
+    const clickDeleteButton = () => {
+        deleteMutation.mutate(detailId);
+        goList();
     }
 
     
@@ -370,14 +391,14 @@ const Detail = ({detailId}:DetailProps) => {
                 {level == UserLevel.Admin ? ( 
                     <>
                      <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickUpdateButton();}}>수정하기</Button>
-                     <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {}}>삭제하기</Button> 
+                     <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickDeleteButton();}}>삭제하기</Button> 
                     </>
                 ) :  null
                     
                 }
                
                 
-                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {console.log("버튼 클릭 직전"); clickLikeButton();}}>좋아요 누르기</Button>
+                <Button sx={{width:150, height:50}} variant="contained" onClick = {() => {clickLikeButton();}}>좋아요 누르기</Button>
             </Box>
            
         </div>
