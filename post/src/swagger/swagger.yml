@@ -58,7 +58,7 @@ paths:
             schema:
               type: integer
             required: true
-            description: 보고자 하는 게시글 아이디 
+            description: 수정하고자 하는 게시글 아이디 
         requestBody:
           content:
             application/json:
@@ -86,7 +86,7 @@ paths:
                     success:
                       type: boolean
                       example:  true
-                      description: 게시글 등록 성공      
+                      description: 게시글 수정 성공      
     delete:
         tags: 
           - post
@@ -108,7 +108,7 @@ paths:
                     success:
                       type: boolean
                       example:  true
-                      description: 게시글 등록 성공                                 
+                      description: 게시글 삭제 성공                                 
 
   /post:
     post:
@@ -143,6 +143,90 @@ paths:
                     type: boolean
                     example:  true
                     description: 게시글 등록 성공
+
+
+  /comments/{postId}:
+    get:
+      tags: 
+        - comment
+      description: 게시글에 대한 댓글 조회     
+      responses:
+        "200":
+          description: OK          
+          content:
+            application/json:
+              schema:
+                properties:
+                  comments:
+                    type: array
+                    example: [{postId : 1, id : 1,  writer: "익명이1", regDate : "Tue Aug 19 2025 12:14:08", content : "안녕하세요1. 잘부탁드려요."}, {postId : 1, id : 2, writer: "익명이2", regDate : "Tue Aug 18 2025 12:14:08", content : "안녕하세요2. 잘부탁드려요."}]
+                    description: 댓글 리스트     
+
+
+  /comment/{postId}:
+    post:
+      tags: 
+        - comment
+      description: 댓글 등록 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                postId:
+                  description : 게시글 아이디
+                  type: integer
+                  nullable : false
+                writer:
+                  description : 댓글 작성자 
+                  type: string
+                  nullable : false  
+                content:
+                  description : 댓글 내옹
+                  type: string
+                  nullable : false     
+      responses:
+        "200":
+          description: OK          
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                    example:  true
+                    description: 댓글 등록 성공  
+
+
+  /comment/{postId}/{id} :   
+    delete:
+          tags: 
+            - comment
+          description: 댓글 삭제
+          parameters:
+            - in: path
+              name: postId
+              schema:
+                type: integer
+              required: true
+              description: 게시글 아이디 
+            - in: path
+              name: id
+              schema:
+                type: integer
+              required: true
+              description: 댓글 아이디   
+          responses:
+            "200":
+              description: OK          
+              content:
+                application/json:
+                  schema:
+                    properties:
+                      success:
+                        type: boolean
+                        example:  true
+                        description: 댓글 삭제 성공                                                    
 
  
                  
