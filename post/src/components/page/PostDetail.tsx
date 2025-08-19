@@ -37,7 +37,7 @@ const PostDetail = () => {
             <Detail detailId={detailId}/>
 
             {/**코멘트 영역 */}
-            <Comment/>
+            <Comment detailId={detailId}/>
         </div>
     );
 }

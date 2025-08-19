@@ -16,9 +16,11 @@ import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactquer
 import { AxiosRequest } from '../../interface/AxiosRequest';
 import { InputComment, registerComment } from '../../interface/InputComment';
 import { MyComment } from '../../interface/MyComment';
+import { DetailProps } from '../../interface/DetailProps';
 
 import { fakerKO as faker } from "@faker-js/faker";
 import { Result } from '../../interface/Result';
+import useRouter from '../../router/useRouter';
 
 const CommentWriteDivStyle = css`
   margin-top: 100px;
@@ -33,7 +35,7 @@ const CommentWriteButtonDivStyle = css`
 `
 
 
-const CommentWrite = () => {
+const CommentWrite = ({detailId}:DetailProps) => {
 
     //RHF 기본은 FieldValues 타입이라 지정해야함
     const { register, handleSubmit, reset } = useForm<InputComment>();
@@ -41,7 +43,7 @@ const CommentWrite = () => {
     const registerComment = async (comment:registerComment) => {
           //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
           //url에 포함시키는것은 경로 파라미터
-          const data = await makePostRequestBaseAndExecuteAxios<registerComment,Result>(`/comment`,comment);
+          const data = await makePostRequestBaseAndExecuteAxios<registerComment,Result>(`/comment/${comment.postId}`,comment);
           console.log("axios comment 결과");
           console.log(data);
           return data.responseData;
@@ -56,7 +58,7 @@ const CommentWrite = () => {
 
     const insertClick = (inputContent:InputComment) => {
         console.log("등록완료");
-        registerMutation.mutate({ writer:'익명이',  content:inputContent.content});
+        registerMutation.mutate({ postId:detailId, writer:'익명이',  content:inputContent.content});
         reset();
     } 
 

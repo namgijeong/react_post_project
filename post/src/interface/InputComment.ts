@@ -3,6 +3,7 @@ export interface InputComment{
 }
 
 export interface registerComment{
+    postId : number;
     writer:string;
     content:string;
 }

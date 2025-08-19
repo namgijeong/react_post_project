@@ -1,0 +1,148 @@
+openapi: "3.0.2"
+info:
+  title: POST API
+  version: "1.0"
+  description: POST 게시판 API 명세서 입니다.
+servers:
+  - url: http://localhost:3000
+
+
+paths:
+  /posts:
+    get:
+      tags: 
+        - posts
+      description: 게시글 리스트 조회 
+      responses:
+        "200":
+          description: OK          
+          content:
+            application/json:
+              schema:
+                properties:
+                  posts:
+                    type: array
+                    example: [{id : 1, title:  "안녕하세요1", writer: "익명이1", regDate : "Tue Aug 19 2025 12:14:08",content : "안녕하세요1. 잘부탁드려요.", readCount : 100, likeCount : 100}, {id : 2, title:  "안녕하세요2", writer: "익명이2", regDate : "Tue Aug 18 2025 12:14:08", content : "안녕하세요2. 잘부탁드려요.", readCount : 200, likeCount : 200}]
+                    description: 게시글 리스트 
+
+  /post/{id}:
+    get:
+      tags: 
+        - post
+      description: 게시글 상세 조회
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: 보고자 하는 게시글 아이디 
+      responses:
+        "200":
+          description: OK          
+          content:
+            application/json:
+              schema:
+                properties:
+                  post:
+                    type: object
+                    example: {id : 1, title:  "안녕하세요1", writer: "익명이1", regDate : "Tue Aug 19 2025 12:14:08",content : "안녕하세요1. 잘부탁드려요.", readCount : 100, likeCount : 100}
+                    description: 게시글
+    put:
+        tags: 
+          - post
+        description: 게시글 수정
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: 보고자 하는 게시글 아이디 
+        requestBody:
+          content:
+            application/json:
+              schema:
+                properties:
+                  title:
+                    description : 게시글 제목
+                    type: string
+                    nullable : false
+                  writer:
+                    description : 작성자
+                    type: string
+                    nullable : false
+                  content:
+                    description : 게시글 내용
+                    type: string
+                    nullable : false  
+        responses:
+          "200":
+            description: OK          
+            content:
+              application/json:
+                schema:
+                  properties:
+                    success:
+                      type: boolean
+                      example:  true
+                      description: 게시글 등록 성공      
+    delete:
+        tags: 
+          - post
+        description: 게시글 삭제
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: 삭제하고자 하는 게시글 아이디 
+        responses:
+          "200":
+            description: OK          
+            content:
+              application/json:
+                schema:
+                  properties:
+                    success:
+                      type: boolean
+                      example:  true
+                      description: 게시글 등록 성공                                 
+
+  /post:
+    post:
+      tags: 
+        - post
+      description: 게시글 등록
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  description : 게시글 제목
+                  type: string
+                  nullable : false
+                writer:
+                  description : 작성자
+                  type: string
+                  nullable : false
+                content:
+                  description : 게시글 내용
+                  type: string
+                  nullable : false  
+      responses:
+        "200":
+          description: OK          
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                    example:  true
+                    description: 게시글 등록 성공
+
+ 
+                 

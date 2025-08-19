@@ -4,6 +4,8 @@ import {css} from '@emotion/react';
 import CommentTable from "./CommentTable";
 import CommentWrite from './CommentWrite';
 
+import { DetailProps } from '../../interface/DetailProps';
+
 const CommentWriteDivStyle = css`
   margin-top: 50px !important;
   margin : auto;
@@ -20,17 +22,17 @@ const CommentTableDivStyle = css`
  
 `;
 
-const Comment = () => {
+const Comment = ({detailId}:DetailProps) => {
     return (
         <div>
             {/**코멘트 작성하기 칸 */}
             <div css ={CommentWriteDivStyle}>
-                <CommentWrite/>
+                <CommentWrite detailId={detailId}/>
             </div>
             
             {/**코멘트 리스트와 각 코멘트별로 삭제버튼 */}
             <div css={CommentTableDivStyle}>
-                <CommentTable/>
+                <CommentTable detailId={detailId}/>
             </div>
            
         </div>

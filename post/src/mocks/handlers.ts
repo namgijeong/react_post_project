@@ -174,7 +174,7 @@ export const handlers = [
     }),
 
     //댓글 리스트 조회
-    http.get('/comments', async({params, request}) => {
+    http.get('/comments/:postId', async({params, request}) => {
         //데이터 배열과 연동
         const comments: Array<MyComment> = commentsData;
         console.log("/posts msw에 들어옴");
@@ -183,7 +183,7 @@ export const handlers = [
     }),
 
     //댓글 등록하기
-    http.post('/comment', async({params, request}) => {
+    http.post('/comment/:postId', async({params, request}) => {
         const bodyData =await request.json() as registerComment;
         let bodyPost = {...bodyData, id:faker.number.int({ min: 1, max: 999 }), regDate: faker.date.recent().toString()}
         console.log("msw bodyData : "+bodyData);
@@ -206,7 +206,7 @@ export const handlers = [
     }),
 
     //댓글 삭제하기
-    http.delete('/comment/:id', async({params, request}) => {
+    http.delete('/comment/:postId/:id', async({params, request}) => {
         const {id} =params;
         console.log("msw id : "+id);
 

@@ -32,12 +32,13 @@ export const makeMultiplePostData = () => {
 }
 
 export const makeOneCommentData = () => {
+    const postId = faker.number.int({ min: 1, max: 999 });
     const id = faker.number.int({ min: 1, max: 999 });
     const writer = faker.person.fullName();
     const regDate = faker.date.recent().toString();
     const content = faker.lorem.paragraph(); 
 
-    const oneComment:MyComment = {id:id,  writer:writer, regDate:regDate, content:content}
+    const oneComment:MyComment = {postId: postId, id:id,  writer:writer, regDate:regDate, content:content}
     return oneComment;
 }
 

@@ -22,6 +22,8 @@ import { UserLevel } from '../../enum/UserLevel';
 
 import { MyComment } from '../../interface/MyComment';
 import { Result } from '../../interface/Result';
+import { DetailProps } from '../../interface/DetailProps';
+import { CommentProps } from '../../interface/CommentProps';
 
 type TableRow = {
   "id" :number,
@@ -35,23 +37,23 @@ type TableRow = {
 const paginationModel = { page: 0, pageSize: 10 };
 
 
-const CommentTable = () => {
+const CommentTable = ({detailId}:DetailProps) => {
 
  //const [commentsData,setCommentsData] = useState<Array<Comment> | null>(null);
 
   const requestComments = async () => {
       //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
       //url에 포함시키는것은 경로 파라미터
-      const data = await makeGetRequestBaseAndExecuteAxios<Array<MyComment>>("/comments");
+      const data = await makeGetRequestBaseAndExecuteAxios<Array<MyComment>>(`/comments/${detailId}`);
       console.log("axios comments 결과");
       console.log(data);
       return data.responseData;
   }
 
-  const deleteComment = async (id:number) => {
+  const deleteComment = async (commentProps : CommentProps) => {
       //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
       //url에 포함시키는것은 경로 파라미터
-      const data = await makeDeleteRequestBaseAndExecuteAxios<Result>(`/comment/${id}`);
+      const data = await makeDeleteRequestBaseAndExecuteAxios<Result>(`/comment/${commentProps.postId}/${commentProps.id}`);
       console.log("axios comment 결과");
       console.log(data);
       return data.responseData;
@@ -61,7 +63,7 @@ const CommentTable = () => {
     ['comments'], requestComments
   );
 
-  const deleteMutation = useMutationReactQuery<number,Result|null>(
+  const deleteMutation = useMutationReactQuery<CommentProps,Result|null>(
     ['comments'],
     deleteComment
   );
@@ -84,7 +86,8 @@ const CommentTable = () => {
     const clickedId = Number(params.id);
     console.log(`${clickedId}번 게시글 삭제`);
     //useQuery는 컴포넌트가 마운트되면서 자동으로 실행이되는 반면, useMutation은 함수를 직접 실행
-        deleteMutation.mutate(clickedId);
+    const commentProps : CommentProps = {postId : detailId, id : clickedId};
+    deleteMutation.mutate(commentProps);
   }
 
   const columns: GridColDef[] = [
