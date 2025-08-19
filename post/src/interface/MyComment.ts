@@ -1,7 +1,7 @@
 export interface MyComment{
     id: number;
     writer:string;
-    regDate:Date;
+    regDate:string;
     content:string;
    
 }

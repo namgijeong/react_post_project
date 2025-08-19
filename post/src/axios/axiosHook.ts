@@ -96,9 +96,9 @@ export const makePutRequestBaseAndExecuteAxios = async <T,V>(url:string , bodyDa
 
 }
 
-export const makeDeleteRequestBaseAndExecuteAxios = async <T,V>(url:string , bodyData : T ):Promise<ResponseBase<V>> => {
+export const makeDeleteRequestBaseAndExecuteAxios = async <V>(url:string):Promise<ResponseBase<V>> => {
     //이게  RequestBase<T>
-   const requestBase:RequestBase<T> =  {url:url, method: 'delete', bodyData: bodyData , responseType : 'json'};
+   const requestBase:RequestBase<null> =  {url:url, method: 'delete',  responseType : 'json'};
 
    //타입 단언을 해줘야 unknown이라고 뜨지 않음 
    const responseData = makeAxiosAndGetData(requestBase) as Promise<ResponseBase<V>>;

@@ -8,7 +8,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 import { useForm } from "react-hook-form";
 
-import { axiosGetData, axiosPostData, axiosPutData } from '../../axios/axiosHook';
+import { axiosGetData, axiosPostData, axiosPutData, makePostRequestBaseAndExecuteAxios } from '../../axios/axiosHook';
 
 import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
 
@@ -18,6 +18,7 @@ import { Post } from '../../interface/Post';
 import { fakerKO as faker } from "@faker-js/faker";
 
 import {useGoListPost} from '../../router/routerHook';
+import { Result } from '../../interface/Result';
 
 
 const DetailDivStyle = css`
@@ -76,25 +77,25 @@ function PostWrite(){
     //커스텀 훅에서 일반함수를 반환 
     let go = useGoListPost();
       
-    const registerPost = async (post:Post) => {
-              //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-              //url에 포함시키는것은 경로 파라미터
-              const data = await axiosPostData<Post>({url:`/post`,data:post});
-              console.log("axios comment 결과");
-              console.log(data);
-              return data;
+const registerPost = async (post:InputPost) => {
+        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+        //url에 포함시키는것은 경로 파라미터
+        const data = await makePostRequestBaseAndExecuteAxios<InputPost, Result>(`/post`, post);
+        console.log("axios comment 결과");
+        console.log(data);
+        return data.responseData;
     }
     
     //mutate에 comment타입의 객체를 넣었더니 계속 에러가 났다..
     //거의 100% Comment 라는 이름이 네이티브 DOM 타입(Comment = HTML 주석 노드) 과 충돌
-    const registerMutation = useMutationReactQuery(
+    const registerMutation = useMutationReactQuery<InputPost, Result | null>(
         ['posts'],
         registerPost
     );
     
     const insertClick = (inputContent:InputPost) => {
         console.log("등록완료");
-        registerMutation.mutate({id:faker.number.int({ min: 1, max: 999 }), title:inputContent.title, writer:inputContent.writer, regDate:new Date(), content:inputContent.content, likeCount:0, readCount:0});
+        registerMutation.mutate({title:inputContent.title, writer:inputContent.writer, content:inputContent.content});
         reset();
         go();
     } 

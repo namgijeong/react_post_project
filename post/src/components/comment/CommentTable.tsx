@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import { GridRowId } from '@mui/x-data-grid';
 
 import axios from 'axios';
-import { axiosGetData, axiosPutData, axiosDeleteData } from '../../axios/axiosHook';
+import { axiosGetData, axiosPutData, axiosDeleteData, makeGetRequestBaseAndExecuteAxios, makeDeleteRequestBaseAndExecuteAxios } from '../../axios/axiosHook';
 
 import { useQuery } from '@tanstack/react-query';
 import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
@@ -20,6 +20,9 @@ import useStore from '../../store/useStore';
 import { Level } from '../../interface/Level';
 import { UserLevel } from '../../enum/UserLevel';
 
+import { MyComment } from '../../interface/MyComment';
+import { Result } from '../../interface/Result';
+
 type TableRow = {
   "id" :number,
   "writer": string,
@@ -27,50 +30,50 @@ type TableRow = {
   "content": string,
 }
 
-let rows: TableRow[] = [];
+//let rows: TableRow[] = [];
 
 const paginationModel = { page: 0, pageSize: 10 };
 
 
 const CommentTable = () => {
 
-  const [commentsData,setCommentsData] = useState<Array<Comment> | null>(null);
+ //const [commentsData,setCommentsData] = useState<Array<Comment> | null>(null);
 
   const requestComments = async () => {
       //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
       //url에 포함시키는것은 경로 파라미터
-      const data = await axiosGetData<string>({url:"/comments", data:""});
+      const data = await makeGetRequestBaseAndExecuteAxios<Array<MyComment>>("/comments");
       console.log("axios comments 결과");
       console.log(data);
-      return data;
+      return data.responseData;
   }
 
   const deleteComment = async (id:number) => {
       //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
       //url에 포함시키는것은 경로 파라미터
-      const data = await axiosDeleteData<string>({url:`/comment/${id}`, data:""});
+      const data = await makeDeleteRequestBaseAndExecuteAxios<Result>(`/comment/${id}`);
       console.log("axios comment 결과");
       console.log(data);
-      return data;
+      return data.responseData;
   }
 
-  const {data, isLoading, isFetching, error} = useReactQuery(
+  const {data, isLoading, isFetching, error} = useReactQuery<Array<MyComment>|null>(
     ['comments'], requestComments
   );
 
-  const deleteMutation = useMutationReactQuery(
+  const deleteMutation = useMutationReactQuery<number,Result|null>(
     ['comments'],
     deleteComment
   );
 
 
-  useEffect(() => {
-    if (data) {
-        setCommentsData(data);
-        rows = data;
+  // useEffect(() => {
+  //   if (data) {
+  //       setCommentsData(data);
+  //       rows = data;
 
-    }
-  },[data]);
+  //   }
+  // },[data]);
 
 
   let level = useStore((state) => state.level);
@@ -121,7 +124,7 @@ const CommentTable = () => {
         
     <Paper sx={{ height: 400, width: 865, margin: 'auto' }}>
       <DataGrid
-        rows={rows}
+        rows={data? data : []}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         sx={{ border: 0 }}

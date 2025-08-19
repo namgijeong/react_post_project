@@ -12,7 +12,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 import { useForm } from "react-hook-form";
 
-import { axiosGetData, axiosPostData, axiosPutDataWithBody } from '../../axios/axiosHook';
+import { axiosGetData, axiosPostData, axiosPutDataWithBody, makePutRequestBaseAndExecuteAxios } from '../../axios/axiosHook';
 
 import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
 
@@ -20,6 +20,7 @@ import { InputPost } from '../../interface/InputPost';
 import { Post } from '../../interface/Post';
 
 import {useGoDetailPost} from '../../router/routerHook';
+import { Result } from '../../interface/Result';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -81,18 +82,18 @@ function PostUpdate(){
     //커스텀 훅에서 일반함수를 반환 
     let go = useGoDetailPost();
 
-    const updatePost = async (post:Post) => {
+    const updatePost = async (post:InputPost) => {
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터
-        const data = await axiosPutDataWithBody<Post>({url:`/post/${detailId}`,data:post});
+        const data = await makePutRequestBaseAndExecuteAxios<InputPost, Result>(`/post/${detailId}`, post);
         console.log("axios comment 결과");
         console.log(data);
-        return data;
+        return data.responseData;
     }
 
     //mutate에 comment타입의 객체를 넣었더니 계속 에러가 났다..
     //거의 100% Comment 라는 이름이 네이티브 DOM 타입(Comment = HTML 주석 노드) 과 충돌
-    const registerMutation = useMutationReactQuery(
+    const registerMutation = useMutationReactQuery<InputPost, Result | null>(
         ['posts'],
         updatePost
     );
@@ -112,7 +113,7 @@ function PostUpdate(){
     
     const updateClick = (inputContent:InputPost) => {
         console.log("등록완료");
-        registerMutation.mutate({id:detailId, title:inputContent.title, writer:inputContent.writer, regDate:new Date(), content:inputContent.content, likeCount:0, readCount:0});
+        registerMutation.mutate({title:inputContent.title, writer:inputContent.writer, content:inputContent.content});
         reset();
         go(detailId);
     } 

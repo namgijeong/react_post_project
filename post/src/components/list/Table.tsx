@@ -51,14 +51,14 @@ const Table = () => {
   const requestPosts = async () => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터
-    const data = await makeGetRequestBaseAndExecuteAxios<Post>("/posts");
+    const data = await makeGetRequestBaseAndExecuteAxios<Array<Post>>("/posts");
     console.log("axios 결과");
     console.log(data);
     return data.responseData;
   }
 
 
-  const {data, isLoading, isFetching, error} = useReactQuery(
+  const {data, isLoading, isFetching, error} = useReactQuery<Array<Post>|null>(
     ['posts'], requestPosts
   );
 
@@ -90,7 +90,7 @@ const Table = () => {
       //sx=> mui에서 스타일을 바로 작성할 수 있게 해주는 prop
     <Paper sx={{ height: 400, width: '70%', margin: 'auto',}}>
       <DataGrid
-        rows={data}
+        rows={data? data : []}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         sx={{ border: 0 }}

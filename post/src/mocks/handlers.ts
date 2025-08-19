@@ -4,6 +4,9 @@ import { Post } from '../interface/Post';
 import { MyComment } from '../interface/MyComment';
 // import useStore from '../components/store/useStore';
 import {getPostsData, getCommentsData, changePostsData, changeCommentsData } from '../faker/storeFakerData';
+import { registerComment } from "../interface/InputComment";
+import { InputPost } from "../interface/InputPost";
+import { fakerKO as faker } from "@faker-js/faker";
 
 let postsData = getPostsData();
 let commentsData = getCommentsData();
@@ -96,13 +99,14 @@ export const handlers = [
 
     //게시글 작성하기 
     http.post('/post', async({params, request}) => {
-        const bodyData =await request.json() as Post;
+        const bodyData =await request.json() as InputPost;
         console.log("msw bodyData : "+bodyData);
 
+        let bodyPost = {...bodyData, id:faker.number.int({ min: 1, max: 999 }), readCount:0, likeCount:0, regDate: faker.date.recent().toString()}
         //데이터 배열과 연동
         let posts: Array<Post> = postsData;
         //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
-        const newArr = [...postsData, bodyData];
+        const newArr = [...postsData, bodyPost];
         console.log(newArr);
         posts = newArr;
         postsData = newArr;
@@ -120,7 +124,7 @@ export const handlers = [
     http.put('/post/:id', async({params, request}) => {
         const {id} =params;
 
-        const bodyData =await request.json() as Post;
+        const bodyData =await request.json() as InputPost;
         console.log("msw bodyData : "+bodyData);
         console.log("msw id : "+id);
 
@@ -128,7 +132,7 @@ export const handlers = [
         let posts: Array<Post> = postsData;
         //객체의 복사와 일부 속성 덮어쓰기기
         const newArr = posts.map(item =>
-            item.id === Number(id) ? { ...item, title: bodyData.title, writer:bodyData.writer, content:bodyData.content, regDate:bodyData.regDate} : item
+            item.id === Number(id) ? { ...item, title: bodyData.title, writer:bodyData.writer, content:bodyData.content } : item
         );
 
         console.log(newArr);
@@ -180,13 +184,14 @@ export const handlers = [
 
     //댓글 등록하기
     http.post('/comment', async({params, request}) => {
-        const bodyData =await request.json() as MyComment;
+        const bodyData =await request.json() as registerComment;
+        let bodyPost = {...bodyData, id:faker.number.int({ min: 1, max: 999 }), regDate: faker.date.recent().toString()}
         console.log("msw bodyData : "+bodyData);
 
         //데이터 배열과 연동
         let comments: Array<MyComment> = commentsData;
         //filter는 콜백 함수가 true를 반환하는 원소만 남기는 함수
-        const newArr = [...comments, bodyData];
+        const newArr = [...comments, bodyPost];
         console.log(newArr);
         comments = newArr;
         commentsData = newArr;

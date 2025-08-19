@@ -12,7 +12,7 @@ export interface Post{
     id: number;
     title: string;
     writer: string;
-    regDate: Date;
+    regDate: string;
     readCount: number;
     likeCount: number;
     content: string;

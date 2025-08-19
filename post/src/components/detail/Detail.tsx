@@ -30,6 +30,7 @@ import { Level } from '../../interface/Level';
 import { UserLevel } from '../../enum/UserLevel';
 
 import { useGoUpdatePost, useGoListPost } from '../../router/routerHook';
+import { Result } from '../../interface/Result';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -111,10 +112,10 @@ const Detail = ({detailId}:DetailProps) => {
 
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터
-        const data = await axiosGetData<string>({url:`/post/${detailId}`, data:""});
+        const data = await makeGetRequestBaseAndExecuteAxios<Post>(`/post/${detailId}`);
         console.log("request post axios 결과");
         console.log(data);
-        return data;
+        return data.responseData;
     }
 
 
@@ -146,12 +147,14 @@ const Detail = ({detailId}:DetailProps) => {
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
         //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-        const data = await axiosDeleteData<string>({url:`/post/${detailId}`, data:""});
+        const data = await makeDeleteRequestBaseAndExecuteAxios<Result>(`/post/${detailId}`);
         console.log("delete post axios 수행");
-        return data;
+        return data.responseData;
     }
 
-    const {data, isLoading, isFetching, error} = useReactQuery(
+    //React Query는 비동기 요청이 완료되기 전까지 data가 존재하지 않음
+    //따라서 data는 항상 **T | undefined**로 추론
+    const {data, isLoading, isFetching, error} = useReactQuery<Post|null>(
         ['post', `${detailId}`], () => requestPost(detailId)
     );
     
@@ -165,7 +168,7 @@ const Detail = ({detailId}:DetailProps) => {
     //     requestUpdateRead
     // );
 
-    const deleteMutation = useMutationReactQuery(
+    const deleteMutation = useMutationReactQuery<number, Result|null>(
         ['post',  `${detailId}`],
         requestDeletePost
     );
@@ -175,6 +178,7 @@ const Detail = ({detailId}:DetailProps) => {
         //새 값을 계산하면 원래 값과 참조가 완전히 달라짐
         let newLike = like +1;
         setLike(newLike);
+        console.log("newLike: ", newLike);
         
         //useQuery는 컴포넌트가 마운트되면서 자동으로 실행이되는 반면, useMutation은 함수를 직접 실행
         //likeMutation.mutate({detailId: detailId , like: newLike});
@@ -201,24 +205,24 @@ const Detail = ({detailId}:DetailProps) => {
         if (data) {
             console.log("if data안에 들어옴");
             //setPostData(data);
-            setId(data.id);
+            //setId(data.id);
             setLike(data.likeCount);
             setRead(data.readCount);
-            readCount = data.readCount;
-            setContent(data.content);
-            setTitle(data.title);
-            setWriter(data.writer);
-            setDate(data.regDate);
+            //readCount = data.readCount;
+            //setContent(data.content);
+            //setTitle(data.title);
+            //setWriter(data.writer);
+            //setDate(data.regDate);
 
-            console.log("첫 useEffect 렌더링시 값들");
-            console.log(data);
-            console.log(data.likeCount);
-            console.log(data.readCount+1);
-            console.log(read);
-            console.log(data.content);
-            console.log(data.title);
-            console.log(data.writer);
-            console.log(data.regDate);
+            // console.log("첫 useEffect 렌더링시 값들");
+            // console.log(data);
+            // console.log(data.likeCount);
+            // console.log(data.readCount+1);
+            // console.log(read);
+            // console.log(data.content);
+            // console.log(data.title);
+            // console.log(data.writer);
+            // console.log(data.regDate);
         }
     }, [data]);
 
@@ -264,7 +268,7 @@ const Detail = ({detailId}:DetailProps) => {
                     <div css = {[TitleDivStyle50, rightDivBorder]}>번호</div>
                     {/* id 상태는 숫자 0으로 초기화돼서, <div>{id}</div>는 항상 보임.
                     그래서 id는 바로 렌더링 가능하고, postData?.id나 data?.id는 데이터가 들어오기 전에는 안 보이는 것처럼 보임 */}
-                    <div css = {[TitleDivStyle50, rightDivBorder] }>{id}</div>
+                    <div css = {[TitleDivStyle50, rightDivBorder] }>{data?.id}</div>
 
                 </Box>
                 
@@ -279,7 +283,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}>
 
                     <div css = {[TitleDivStyle100, rightDivBorder]}>작성일시</div>
-                    <div css = {[TitleDivStyle200, rightDivBorder,smallFontSize]}>{date}</div>
+                    <div css = {[TitleDivStyle200, rightDivBorder,smallFontSize]}>{data?.regDate}</div>
 
                 </Box>
 
@@ -294,7 +298,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}>
                     
                     <div css = {[TitleDivStyle100, rightDivBorder]}>조회수</div>
-                    <div css = {[TitleDivStyle50, rightDivBorder]}>{read}</div>
+                    <div css = {[TitleDivStyle50, rightDivBorder]}>{data?.readCount}</div>
 
                 </Box>
 
@@ -309,7 +313,7 @@ const Detail = ({detailId}:DetailProps) => {
                 }}>
 
                     <div css = {[TitleDivStyle100, rightDivBorder]}>좋아요 수</div>
-                    <div css = {TitleDivStyle50}>{like}</div>
+                    <div css = {TitleDivStyle50}>{data?.likeCount}</div>
                 </Box>
 
             </Box>
@@ -336,7 +340,7 @@ const Detail = ({detailId}:DetailProps) => {
             
                 }}>
                     <div css = {[TitleDivStyle100, rightDivBorder]}>제목</div>
-                    <div css = {[TitleDivStyle300, rightDivBorder]}>{title}</div>
+                    <div css = {[TitleDivStyle300, rightDivBorder]}>{data?.title}</div>
                 </Box>
 
                 {/**작성자 영역*/}
@@ -349,7 +353,7 @@ const Detail = ({detailId}:DetailProps) => {
             
                 }}>
                     <div css = {[TitleDivStyle100,rightDivBorder]}>작성자</div>
-                    <div css = {TitleDivStyle200}>{writer}</div>
+                    <div css = {TitleDivStyle200}>{data?.writer}</div>
                 </Box>
             </Box>
 
@@ -371,7 +375,7 @@ const Detail = ({detailId}:DetailProps) => {
                     minRows={21}
                     aria-label="maximum height"
                     placeholder="글의 본문내용이 여기에 표시되었습니다. 안녕하세요."
-                    value={content}
+                    value={data?.content}
                     style={{ width: 700,  resize: 'none', border:"none" }}
                 />
             </Box>

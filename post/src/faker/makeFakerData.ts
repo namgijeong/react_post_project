@@ -11,7 +11,7 @@ export const makeOnePostData = () => {
     const id = faker.number.int({ min: 1, max: 999 });
     const title = faker.lorem.words(1);
     const writer = faker.person.fullName();
-    const regDate = faker.date.recent();
+    const regDate = faker.date.recent().toString();
     const readCount = faker.number.int({ min: 1, max: 999 });
     const likeCount = faker.number.int({ min: 1, max: 999 });
     const content = faker.lorem.paragraph(); 
@@ -34,7 +34,7 @@ export const makeMultiplePostData = () => {
 export const makeOneCommentData = () => {
     const id = faker.number.int({ min: 1, max: 999 });
     const writer = faker.person.fullName();
-    const regDate = faker.date.recent();
+    const regDate = faker.date.recent().toString();
     const content = faker.lorem.paragraph(); 
 
     const oneComment:MyComment = {id:id,  writer:writer, regDate:regDate, content:content}
