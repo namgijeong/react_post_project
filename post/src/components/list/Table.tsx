@@ -7,7 +7,7 @@ import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
 import axios from 'axios';
-import { axiosGetData, axiosPutData } from '../../axios/axiosHook';
+import { axiosGetData, axiosPutData, makeGetRequestBaseAndExecuteAxios } from '../../axios/axiosHook';
 
 import { useQuery } from '@tanstack/react-query';
 import { useReactQuery } from '../../reactquery/reactqueryHook';
@@ -46,15 +46,15 @@ const paginationModel = { page: 0, pageSize: 20 };
 
 const Table = () => {
 
-  const [postsData,setPostsData] = useState<Array<Post> | null>(null);
+  //const [postsData,setPostsData] = useState<Array<Post> | null>(null);
 
   const requestPosts = async () => {
     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
     //url에 포함시키는것은 경로 파라미터
-    const data = await axiosGetData<string>({url:"/posts", data:""});
+    const data = await makeGetRequestBaseAndExecuteAxios<Post>("/posts");
     console.log("axios 결과");
     console.log(data);
-    return data;
+    return data.responseData;
   }
 
 
@@ -69,13 +69,13 @@ const Table = () => {
   console.log(error);
 
 
-  useEffect(() => {
-    if (data) {
-        setPostsData(data);
-        rows = data;
+  // useEffect(() => {
+  //   if (data) {
+  //       setPostsData(data);
+  //       rows = data;
 
-    }
-  },[data]);
+  //   }
+  // },[data]);
 
   //커스텀 훅에서 일반함수를 반환 
   let go = useGoDetailPost();
@@ -90,7 +90,7 @@ const Table = () => {
       //sx=> mui에서 스타일을 바로 작성할 수 있게 해주는 prop
     <Paper sx={{ height: 400, width: '70%', margin: 'auto',}}>
       <DataGrid
-        rows={rows}
+        rows={data}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         sx={{ border: 0 }}

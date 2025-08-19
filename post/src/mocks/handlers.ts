@@ -42,57 +42,57 @@ export const handlers = [
     }),
 
     //게시글 상세 페이지 좋아요 버튼 누르기 
-    http.put('/like/:id/:like', async({params, request}) => {
-        console.log("like handler 진입");
-        const {id, like} =params;
-        console.log("msw id : "+id);
-        console.log("msw like : "+like);
+    // http.put('/like/:id/:like', async({params, request}) => {
+    //     console.log("like handler 진입");
+    //     const {id, like} =params;
+    //     console.log("msw id : "+id);
+    //     console.log("msw like : "+like);
 
-        //데이터 배열과 연동
-        let posts: Array<Post> = postsData;
-        //객체의 복사와 일부 속성 덮어쓰기
-        const newArr = posts.map(item =>
-            item.id === Number(id) ? { ...item, likeCount: Number(like) } : item
-        );
+    //     //데이터 배열과 연동
+    //     let posts: Array<Post> = postsData;
+    //     //객체의 복사와 일부 속성 덮어쓰기
+    //     const newArr = posts.map(item =>
+    //         item.id === Number(id) ? { ...item, likeCount: Number(like) } : item
+    //     );
 
-        console.log(newArr);
-        posts = newArr;
-        postsData = newArr;
+    //     console.log(newArr);
+    //     posts = newArr;
+    //     postsData = newArr;
     
-        console.log("바뀐 posts 데이터");
-        console.log(posts);
+    //     console.log("바뀐 posts 데이터");
+    //     console.log(posts);
 
-        //저장소 데이터 배열에 덮어쓰기
-        changePostsData(newArr);
+    //     //저장소 데이터 배열에 덮어쓰기
+    //     changePostsData(newArr);
     
-        return HttpResponse.json({success:true});
-    }),
+    //     return HttpResponse.json({success:true});
+    // }),
 
     //게시글 상세페이지 진입시 조회수 올리기
-    http.put('/read/:id/:read', async({params, request}) => {
-        const {id, read} =params;
-        console.log("msw id : "+id);
-        console.log("msw read : "+read);
+    // http.put('/read/:id/:read', async({params, request}) => {
+    //     const {id, read} =params;
+    //     console.log("msw id : "+id);
+    //     console.log("msw read : "+read);
 
-        //데이터 배열과 연동
-        let posts: Array<Post> = postsData;
-        //객체의 복사와 일부 속성 덮어쓰기기
-        const newArr = posts.map(item =>
-            item.id === Number(id) ? { ...item, readCount: Number(read) } : item
-        );
+    //     //데이터 배열과 연동
+    //     let posts: Array<Post> = postsData;
+    //     //객체의 복사와 일부 속성 덮어쓰기기
+    //     const newArr = posts.map(item =>
+    //         item.id === Number(id) ? { ...item, readCount: Number(read) } : item
+    //     );
 
-        console.log(newArr);
-        posts = newArr;
-        postsData = newArr;
+    //     console.log(newArr);
+    //     posts = newArr;
+    //     postsData = newArr;
     
-        console.log("바뀐 posts 데이터");
-        console.log(posts);
+    //     console.log("바뀐 posts 데이터");
+    //     console.log(posts);
     
-        //저장소 데이터 배열에 덮어쓰기
-        changePostsData(newArr);
+    //     //저장소 데이터 배열에 덮어쓰기
+    //     changePostsData(newArr);
        
-        return HttpResponse.json({success:true});
-    }),
+    //     return HttpResponse.json({success:true});
+    // }),
 
     //게시글 작성하기 
     http.post('/post', async({params, request}) => {

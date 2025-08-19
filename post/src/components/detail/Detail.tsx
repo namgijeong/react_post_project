@@ -20,7 +20,7 @@ import {ReadVariables} from '../../interface/ReadVariables';
 import { InputPost } from '../../interface/InputPost';
 
 import axios from 'axios';
-import { axiosGetData, axiosPutData, axiosDeleteData } from '../../axios/axiosHook';
+import { axiosGetData, axiosPutData, axiosDeleteData, makeGetRequestBaseAndExecuteAxios, makePostRequestBaseAndExecuteAxios, makePutRequestBaseAndExecuteAxios, makeDeleteRequestBaseAndExecuteAxios } from '../../axios/axiosHook';
 
 import { useQuery } from '@tanstack/react-query';
 import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactqueryHook';
@@ -119,27 +119,27 @@ const Detail = ({detailId}:DetailProps) => {
 
 
     //객체 구조분해(destructuring) + 타입 지정
-    const requestUpdateLike = async ({ detailId, like }: LikeVariables) => {
+    // const requestUpdateLike = async ({ detailId, like }: LikeVariables) => {
     
-        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-        //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+    //     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+    //     //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-        console.log("detailId: " , detailId);
-        console.log("like: " , like);
-        const data = await axiosPutData<string>({url:`/like/${detailId}/${like}`, data:""});
-        console.log("update like axios 수행");
-        return data;
-    }
+    //     console.log("detailId: " , detailId);
+    //     console.log("like: " , like);
+    //     const data = await axiosPutData<string>({url:`/like/${detailId}/${like}`, data:""});
+    //     console.log("update like axios 수행");
+    //     return data;
+    // }
 
-    const requestUpdateRead = async ({detailId, read}: ReadVariables) => {
+    // const requestUpdateRead = async ({detailId, read}: ReadVariables) => {
     
-        //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
-        //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
+    //     //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
+    //     //url에 포함시키는것은 경로 파라미터로 매개변수 한개만 
 
-        const data = await axiosPutData<string>({url:`/read/${detailId}/${read}`, data:""});
-        console.log("update read axios 수행");
-        return data;
-    }
+    //     const data = await axiosPutData<string>({url:`/read/${detailId}/${read}`, data:""});
+    //     console.log("update read axios 수행");
+    //     return data;
+    // }
 
     const requestDeletePost = async (detailId:number) => {
     
@@ -155,15 +155,15 @@ const Detail = ({detailId}:DetailProps) => {
         ['post', `${detailId}`], () => requestPost(detailId)
     );
     
-    const likeMutation = useMutationReactQuery(
-        ['post',  `${detailId}`],
-        requestUpdateLike
-    );
+    // const likeMutation = useMutationReactQuery(
+    //     ['post',  `${detailId}`],
+    //     requestUpdateLike
+    // );
 
-    const readMutation = useMutationReactQuery(
-        ['post',  `${detailId}`],
-        requestUpdateRead
-    );
+    // const readMutation = useMutationReactQuery(
+    //     ['post',  `${detailId}`],
+    //     requestUpdateRead
+    // );
 
     const deleteMutation = useMutationReactQuery(
         ['post',  `${detailId}`],
@@ -177,7 +177,7 @@ const Detail = ({detailId}:DetailProps) => {
         setLike(newLike);
         
         //useQuery는 컴포넌트가 마운트되면서 자동으로 실행이되는 반면, useMutation은 함수를 직접 실행
-        likeMutation.mutate({detailId: detailId , like: newLike});
+        //likeMutation.mutate({detailId: detailId , like: newLike});
         
     }
     
@@ -223,20 +223,20 @@ const Detail = ({detailId}:DetailProps) => {
     }, [data]);
 
 
-    useEffect (() => {
-        console.log("useEffect read에 들어옴");
-        if (!data) return; // 데이터가 준비되지 않았으면 실행하지 않음
-        if (alreadyIncreased) return; // 이미 증가시켰으면 다시 실행하지 않음
+    // useEffect (() => {
+    //     console.log("useEffect read에 들어옴");
+    //     if (!data) return; // 데이터가 준비되지 않았으면 실행하지 않음
+    //     if (alreadyIncreased) return; // 이미 증가시켰으면 다시 실행하지 않음
         
-        //TypeScript의 "Optional Chaining" 문법
-        //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
-        // if (postData?.readCount == undefined) return;
-        // if (read == postData?.readCount) return;
-        let readPlus = readCount + 1 ;
-        setRead(readPlus+1);
-        setAlreadyIncreased(true);
-        readMutation.mutate({detailId: detailId , read: readPlus});
-    },[data, alreadyIncreased]);
+    //     //TypeScript의 "Optional Chaining" 문법
+    //     //처음 불러온 초기상태랑 값이 같으면 또 자동동작하지 않도록
+    //     // if (postData?.readCount == undefined) return;
+    //     // if (read == postData?.readCount) return;
+    //     let readPlus = readCount + 1 ;
+    //     setRead(readPlus+1);
+    //     setAlreadyIncreased(true);
+    //     readMutation.mutate({detailId: detailId , read: readPlus});
+    // },[data, alreadyIncreased]);
 
 
     return (
