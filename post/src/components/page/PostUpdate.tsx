@@ -3,8 +3,6 @@ import React from 'react';
 import {css} from '@emotion/react';
 
 import { DetailProps } from '../../interface/DetailProps';
-import {useParams} from 'react-router-dom';
-import { useLocation } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -18,9 +16,9 @@ import { useReactQuery, useMutationReactQuery } from '../../reactquery/reactquer
 
 import { InputPost } from '../../interface/InputPost';
 import { Post } from '../../interface/Post';
-
-import {useGoDetailPost} from '../../router/routerHook';
 import { Result } from '../../interface/Result';
+
+import useRouter from '../../router/useRouter';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -73,14 +71,17 @@ const smallFontSize = css`
 function PostUpdate(){
 
     //navigator state로 가지고 온것
-    const location = useLocation();
-    const {title, writer, content} = location.state;
+    const {params, location, goToDetailPost, queryStrings} = useRouter();
+    const title = queryStrings.get("title");
+    const writer = queryStrings.get("writer");
+    const content = queryStrings.get("content");
+    console.log(title);
+    console.log(writer);
+    console.log(content);
 
     //RHF 기본은 FieldValues 타입이라 지정해야함
     const { register, handleSubmit, reset } = useForm<InputPost>();
         
-    //커스텀 훅에서 일반함수를 반환 
-    let go = useGoDetailPost();
 
     const updatePost = async (post:InputPost) => {
         //axios에서 두번째 매개변수로 params를 사용하는것은 쿼리방식
@@ -99,9 +100,7 @@ function PostUpdate(){
     );
     
 
-    //객체 구조분해
-    const {id} = useParams();
-    const  detailId = id ? parseInt(id, 10) : null;
+    const  detailId = params.id ? parseInt(params.id, 10) : null;
     if (detailId == null) {
         return (
             <div>
@@ -115,7 +114,7 @@ function PostUpdate(){
         console.log("등록완료");
         registerMutation.mutate({title:inputContent.title, writer:inputContent.writer, content:inputContent.content});
         reset();
-        go(detailId);
+        goToDetailPost(detailId);
     } 
 
     return (
@@ -146,7 +145,7 @@ function PostUpdate(){
                     {...register("title")} 
                     style={{ width: 300,  resize: 'none', border:"1px solid gray" }}  
                     css = {[TitleDivStyle300, rightDivBorder]}
-                    defaultValue={title}/>
+                    defaultValue={title ? title : ''}/>
 
                 </Box>
 
@@ -164,7 +163,7 @@ function PostUpdate(){
                     {...register("writer")} 
                     style={{ width: 200,  resize: 'none', border:"1px solid gray" }}  
                     css = {[TitleDivStyle300, rightDivBorder]}
-                    defaultValue={writer}/>
+                    defaultValue={writer ? writer : ''}/>
                 
                 </Box>
             </Box>
@@ -186,7 +185,7 @@ function PostUpdate(){
                     minRows={21} placeholder="본문을 입력해주세요."
                     {...register("content")} 
                     style={{ width: 730,  resize: 'none', border:"none" }}
-                    defaultValue={content}
+                    defaultValue={content ? content : ''}
                 />
             </Box> 
 

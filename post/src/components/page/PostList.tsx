@@ -4,7 +4,7 @@ import {css} from '@emotion/react'
 import Button from '@mui/material/Button';
 import Table from '../list/Table';
 
-import {useGoWritePost} from '../../router/routerHook';
+import useRouter from '../../router/useRouter';
 
 const tableDivStyle = css`
   margin-top:100px;
@@ -24,9 +24,9 @@ const buttonDivStyle = css`
 const PostList = () => {
 
   //커스텀 훅에서 일반함수를 반환 
-  let go = useGoWritePost();
+  const {goToWritePost} = useRouter();
   const goWriteClick = () => {
-     go();
+     goToWritePost();
   }
 
   return (

@@ -18,6 +18,7 @@ import { Post } from '../../interface/Post';
 import {LikeVariables} from '../../interface/LikeVariables';
 import {ReadVariables} from '../../interface/ReadVariables';
 import { InputPost } from '../../interface/InputPost';
+import { Result } from '../../interface/Result';
 
 import axios from 'axios';
 import { axiosGetData, axiosPutData, axiosDeleteData, makeGetRequestBaseAndExecuteAxios, makePostRequestBaseAndExecuteAxios, makePutRequestBaseAndExecuteAxios, makeDeleteRequestBaseAndExecuteAxios } from '../../axios/axiosHook';
@@ -29,8 +30,7 @@ import useStore from '../../store/useStore';
 import { Level } from '../../interface/Level';
 import { UserLevel } from '../../enum/UserLevel';
 
-import { useGoUpdatePost, useGoListPost } from '../../router/routerHook';
-import { Result } from '../../interface/Result';
+import useRouter from '../../router/useRouter';
 
 const DetailDivStyle = css`
   margin-top: 100px;
@@ -186,17 +186,16 @@ const Detail = ({detailId}:DetailProps) => {
     }
     
     //커스텀 훅에서 일반함수를 반환 
-    let goUpdate = useGoUpdatePost();
-    let goList = useGoListPost();
-
+    const {goToUpdatePost, goToListPost} = useRouter();
+    
     const clickUpdateButton = () => {
-        let postData:InputPost = {title:title, writer:writer, content:content};
-        goUpdate(detailId,postData);
+       
+        goToUpdatePost(detailId,data?.title, data?.writer, data?.content);
     }
 
     const clickDeleteButton = () => {
         deleteMutation.mutate(detailId);
-        goList();
+        goToListPost();
     }
 
     
@@ -266,8 +265,6 @@ const Detail = ({detailId}:DetailProps) => {
                 }}> 
                     
                     <div css = {[TitleDivStyle50, rightDivBorder]}>번호</div>
-                    {/* id 상태는 숫자 0으로 초기화돼서, <div>{id}</div>는 항상 보임.
-                    그래서 id는 바로 렌더링 가능하고, postData?.id나 data?.id는 데이터가 들어오기 전에는 안 보이는 것처럼 보임 */}
                     <div css = {[TitleDivStyle50, rightDivBorder] }>{data?.id}</div>
 
                 </Box>
@@ -279,6 +276,7 @@ const Detail = ({detailId}:DetailProps) => {
                     margin: "auto",
                     display: "flex",
                     alignItems: "center",
+                    overflow: "hidden",
             
                 }}>
 

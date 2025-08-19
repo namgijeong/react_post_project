@@ -1,7 +1,7 @@
 import React from 'react';
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react';
-import {useParams} from 'react-router-dom';
+import useRouter from '../../router/useRouter';
 import Detail from '../detail/Detail';
 import Comment from '../comment/Comment';
 
@@ -16,8 +16,8 @@ const DetailDivStyle = css`
 
 const PostDetail = () => {
     //객체 구조분해
-    const {id} = useParams();
-    const  detailId = id ? parseInt(id, 10) : null;
+    const {params} = useRouter();
+    const  detailId = params.id ? parseInt(params.id, 10) : null;
 
     
     if (detailId == null) {
@@ -30,7 +30,7 @@ const PostDetail = () => {
     return (
         <div >
             <h1>Postdetail</h1>
-            <h3>{id}번 게시글입니다.</h3>
+            <h3>{detailId}번 게시글입니다.</h3>
 
 
             {/**포스트의 상세정보 */}
