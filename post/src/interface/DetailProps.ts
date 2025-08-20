@@ -1,4 +1,3 @@
-export interface DetailProps  {
-  detailId: number;  
-};
-
+export interface DetailProps {
+  detailId: number;
+}

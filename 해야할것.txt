@@ -99,6 +99,36 @@ reactquery의 data 써라
 
 
 ---------------------------------------------------------------------------------------------------------------------------
+eslint 설치방법
+https://ablue-1.tistory.com/111
+
+eslint ignore 방법
+https://velog.io/@rimo09/ESLint-%EC%84%A4%EC%A0%95
+
+eslint 실행방법
+https://www.daleseo.com/js-eslint/
+
+javascript heap memory 부족 eslint 오류
+1.packge.json scripts에 추가 
+ "lint": "node --max-old-space-size=8192 node_modules/eslint/bin/eslint.js ."
+2. typescript 5.0이상 업그레이드 => allowImportingTsExtensions라는 에러해결
+=> 근데 문제는 이렇게 하면 react-scripts 5.0.1 cra를 쓸수없다(현재 cra는 서비스 중단이라 더 최신버전 존재 x)
+
+패키지 꼬일때 node modules 날리기
+# PowerShell에서
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
+npm install
+
+/* eslint-disable */
+
+
+prettier 설치방법
+https://inpa.tistory.com/entry/VS-Code-%E2%8F%B1%EF%B8%8F-%ED%95%9C%EB%B0%A9-%EC%BD%94%EB%93%9C-%ED%8F%AC%EB%A7%B7%ED%84%B0-Prettier-%EB%8F%84%EA%B5%AC-%EC%84%A4%EC%A0%95
+
+vscode 단축키
+https://inpa.tistory.com/entry/VS-Code-%E2%8F%B1%EF%B8%8F-%EC%9C%A0%EC%9A%A9%ED%95%9C-%EB%8B%A8%EC%B6%95%ED%82%A4-%EC%A0%95%EB%A6%AC#vscode_%EC%9C%A0%EC%9A%A9%ED%95%9C_%EB%8B%A8%EC%B6%95%ED%82%A4_%EB%AA%A8%EC%9D%8C
+
 타입스크립트 인터페이스 활용하기
 https://inpa.tistory.com/entry/TS-%F0%9F%93%98-%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%F0%9F%92%AF-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0
 

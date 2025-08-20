@@ -1,4 +1,7 @@
-export enum UserLevel{
-    Visitor = "visitor",
-    Admin = "admin",
+/* eslint-disable-next-line no-shadow */
+enum UserLevel {
+   Visitor = 'visitor',
+   Admin = 'admin',
 }
+
+export default UserLevel;

@@ -4,5 +4,5 @@ export interface MyComment{
     writer:string;
     regDate:string;
     content:string;
-   
+
 }

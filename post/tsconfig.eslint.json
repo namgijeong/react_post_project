@@ -1,0 +1,14 @@
+// .eslintignore는 "어떤 파일을 lint 하지 말까?"만 결정합니다.
+// 그런데 지금 에러는 소스 코드에서 babel 타입을 직접 쓰지 않아도 tsconfig.json을 통해 타입 정의 자체를 읽어오다가 나는 거예요.
+// 즉, ESLint가 lint하려는 파일과 무관하게 parserOptions.project 때문에 타입 시스템 전체를 로드합니다.
+// 그래서 .eslintignore에 뭘 적어도 효과가 없어요.
+
+{
+   "extends": "./tsconfig.json",
+   "include": ["src"], // lint는 여기만
+   "exclude": ["node_modules", "dist", "public"],
+
+   "compilerOptions": {
+      "types": []
+   }
+}

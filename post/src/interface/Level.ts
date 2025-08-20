@@ -1,6 +1,6 @@
-import { UserLevel } from '../enum/UserLevel';
+import UserLevel from '../enum/UserLevel';
 
 export interface Level {
-    level:UserLevel,
-    changeLevel :(newLevel:UserLevel) => void,
+   level: UserLevel;
+   changeLevel: (newLevel: UserLevel) => void;
 }

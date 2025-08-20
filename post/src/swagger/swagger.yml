@@ -149,6 +149,12 @@ paths:
     get:
       tags: 
         - comment
+      parameters:
+        - in: path
+          name: postId
+          schema:
+            type: integer
+          required: true
       description: 게시글에 대한 댓글 조회     
       responses:
         "200":
@@ -167,6 +173,12 @@ paths:
     post:
       tags: 
         - comment
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
       description: 댓글 등록 
       requestBody:
         content:
@@ -206,9 +218,9 @@ paths:
           parameters:
             - in: path
               name: postId
+              required: true
               schema:
                 type: integer
-              required: true
               description: 게시글 아이디 
             - in: path
               name: id
